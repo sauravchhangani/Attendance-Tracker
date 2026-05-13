@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>BNI Attendance</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#1a1a1e"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="BNI Att."/>
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f7f7f8;--bg3:#f0f0f2;
+  --text:#111112;--text2:#6b6b78;--text3:#a0a0ab;
+  --border:#e4e4e9;--border2:#d0d0d8;
+  --green:#22c55e;--green-bg:#f0fdf4;--green-text:#15803d;
+  --red:#ef4444;--red-bg:#fef2f2;--red-text:#b91c1c;
+  --amber:#f59e0b;--amber-bg:#fffbeb;--amber-text:#92400e;
+  --purple:#8b5cf6;--purple-bg:#f5f3ff;--purple-text:#5b21b6;
+  --blue:#3b82f6;
+  --nav-h:60px;--topbar-h:56px;
+  --radius:12px;--radius-sm:8px;
+  --shadow-md:0 4px 12px rgba(0,0,0,0.10);
+  --font:'DM Sans',sans-serif;
+}
+html,body{height:100%;background:var(--bg);font-family:var(--font);overflow:hidden;}
+.phone{width:100%;max-width:480px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:fixed;top:0;left:0;right:0;bottom:0;}
+@media (min-width:480px){ .phone{left:50%;right:auto;transform:translateX(-50%);width:480px;} }
+.screen{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;}
+.screen.active{display:flex;}
+.topbar{height:var(--topbar-h);padding:0 16px;display:flex;align-items:center;gap:10px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;z-index:10;}
+.topbar-title{font-size:17px;font-weight:600;color:var(--text);flex:1;}
+.back-btn{width:36px;height:36px;border-radius:50%;background:var(--bg2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);flex-shrink:0;}
+.back-btn svg{width:18px;height:18px;}
+.body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.body::-webkit-scrollbar{width:0;}
+.bottom-nav{height:var(--nav-h);display:flex;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:var(--font);font-size:11px;font-weight:500;}
+.nav-item.active{color:var(--text);}
+.nav-item svg{width:22px;height:22px;}
+.section-label{font-size:11px;font-weight:600;letter-spacing:0.07em;color:var(--text3);text-transform:uppercase;margin-bottom:10px;}
+.search-wrap{position:relative;margin-bottom:14px;}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3);pointer-events:none;}
+.search-input{width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg2);font-family:var(--font);font-size:14px;color:var(--text);outline:none;}
+.search-input:focus{border-color:var(--blue);background:var(--bg);}
+.search-input::placeholder{color:var(--text3);}
+.member-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.member-row:last-child{border-bottom:none;}
+.sr-num{width:20px;font-size:13px;color:var(--text3);font-weight:500;text-align:center;flex-shrink:0;}
+.member-name-text{flex:1;font-size:15px;color:var(--text);}
+.icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
+.icon-btn.danger:active{background:var(--red-bg);color:var(--red);}
+.icon-btn svg{width:17px;height:17px;}
+.table-header{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.th-sr{width:36px;flex-shrink:0;}
+.th-name{flex:1;}
+.th-actions{width:80px;text-align:right;}
+.add-member-btn{display:flex;align-items:center;gap:8px;justify-content:flex-end;padding:0;border:none;background:none;cursor:pointer;color:var(--blue);font-family:var(--font);font-size:14px;font-weight:500;margin-bottom:14px;}
+.add-member-btn svg{width:18px;height:18px;}
+.fab-take{position:absolute;bottom:calc(var(--nav-h) + 16px);right:16px;background:#111112;color:#fff;border:none;border-radius:100px;padding:12px 20px 12px 16px;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-md);z-index:5;}
+.fab-take svg{width:18px;height:18px;}
+.date-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:12px;background:var(--bg2);cursor:pointer;}
+.date-bar svg{width:16px;height:16px;color:var(--text2);flex-shrink:0;}
+.date-bar-text{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.date-locked-badge{font-size:11px;color:var(--text3);font-weight:500;background:var(--bg3);padding:3px 8px;border-radius:20px;}
+input[type="date"]{display:none;}
+.stat-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-tile{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);cursor:pointer;}
+.stat-tile.full{grid-column:1/-1;}
+.stat-tile-label{font-size:13px;color:var(--text2);}
+.stat-tile-count{font-size:13px;font-weight:600;color:var(--text);}
+.stat-tile.unmarked{background:var(--bg2);}
+.att-table-header{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+.att-th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.att-th-sr{width:36px;flex-shrink:0;}
+.att-th-name{flex:1;}
+.att-th-status{width:130px;text-align:center;}
+.att-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.att-row:last-child{border-bottom:none;}
+.att-sr{width:36px;font-size:13px;color:var(--text3);font-weight:500;flex-shrink:0;}
+.att-name{flex:1;font-size:14px;color:var(--text);line-height:1.3;}
+.pals{display:flex;gap:5px;width:130px;justify-content:flex-end;}
+.pals-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font);}
+.pals-btn.active-P{background:var(--green);border-color:var(--green);color:#fff;}
+.pals-btn.active-A{background:var(--red);border-color:var(--red);color:#fff;}
+.pals-btn.active-L{background:var(--purple);border-color:var(--purple);color:#fff;}
+.pals-btn.active-S{background:var(--amber);border-color:var(--amber);color:#fff;}
+.pals-btn.readonly{cursor:default;}
+.action-bar{display:flex;border-top:1px solid var(--border);flex-shrink:0;}
+.action-btn{flex:1;height:52px;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.action-btn.cancel{background:var(--bg2);color:var(--text2);border-right:1px solid var(--border);}
+.action-btn.save{background:var(--bg);color:var(--text);}
+.action-btn svg{width:16px;height:16px;}
+.record-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.record-row:last-child{border-bottom:none;}
+.record-date-text{font-size:15px;font-weight:500;color:var(--text);}
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-draft{background:var(--amber-bg);color:var(--amber-text);}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;z-index:100;}
+.modal-overlay.centered{align-items:center;padding:20px;}
+.modal-sheet{width:100%;background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;}
+.modal-sheet-header{padding:20px 20px 0;flex-shrink:0;background:var(--bg);}
+.modal-sheet-body{flex:1;overflow-y:auto;padding:0 20px 20px;-webkit-overflow-scrolling:touch;}
+.modal-card{width:100%;background:var(--bg);border-radius:var(--radius);padding:20px;}
+.modal-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border2);background:var(--bg);color:var(--text);}
+.btn-primary{background:#111112;color:#fff;border-color:#111112;}
+.form-field{margin-bottom:14px;}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
+.form-input{width:100%;height:42px;padding:0 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);font-family:var(--font);font-size:15px;color:var(--text);outline:none;}
+.form-input:focus{border-color:var(--blue);}
+.filter-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.filter-modal-title{font-size:16px;font-weight:600;color:var(--text);}
+.filter-member-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.filter-member-row:last-child{border-bottom:none;}
+.filter-sr{width:28px;font-size:12px;color:var(--text3);flex-shrink:0;}
+.filter-name{flex:1;font-size:14px;color:var(--text);}
+.filter-pals{display:flex;gap:4px;}
+.empty-state{text-align:center;padding:48px 24px;}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px;}
+.empty-sub{font-size:14px;color:var(--text2);line-height:1.5;}
+.confirm-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.confirm-msg{font-size:14px;color:var(--text2);line-height:1.6;}
+/* LOGIN */
+.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;}
+.login-logo{font-size:36px;font-weight:700;color:var(--text);margin-bottom:4px;letter-spacing:-1px;}
+.login-logo span{color:#c0392b;}
+.login-sub{font-size:14px;color:var(--text2);margin-bottom:40px;}
+.login-btn{width:100%;height:48px;background:#111112;color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;}
+.login-btn:disabled{opacity:0.6;cursor:not-allowed;}
+.login-error{font-size:13px;color:var(--red);margin-top:8px;text-align:center;min-height:18px;}
+/* LOADING */
+.loading-screen{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:14px;color:var(--text2);}
+/* TOAST */
+.toast{position:absolute;bottom:calc(var(--nav-h)+12px);left:50%;transform:translateX(-50%);background:#111112;color:#fff;padding:10px 18px;border-radius:100px;font-size:13px;font-weight:500;white-space:nowrap;z-index:200;pointer-events:none;}
+/* LOGOUT */
+.logout-btn{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:none;font-family:var(--font);font-size:13px;color:var(--text2);cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="phone" id="app">
+
+  <!-- LOGIN -->
+  <div class="screen active" id="screen-login">
+    <div class="login-wrap">
+      <div class="login-logo">BNI<span>.</span></div>
+      <div class="login-sub">Edenite Chapter Attendance</div>
+      <div style="width:100%">
+        <div class="form-field">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="login-email" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <input class="form-input" id="login-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div id="login-error" class="login-error"></div>
+        <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <div class="loading-text" id="loading-text">Loading...</div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="screen-home">
+    <div class="topbar">
+      <div style="flex:1"><div class="topbar-title">BNI Attendance</div></div>
+      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+    </div>
+    <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <!-- STICKY TOP -->
+      <div style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="search-input" id="home-search" placeholder="Search contacts" oninput="renderHomeMembers(this.value)"/>
+        </div>
+        <button class="add-member-btn" onclick="openAddMember()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+          Add member
+        </button>
+        <div class="section-label">All Members</div>
+        <div class="table-header">
+          <span class="th th-sr">SR.</span>
+          <span class="th th-name">NAMES</span>
+          <span class="th th-actions">EDIT&nbsp;&nbsp;DELETE</span>
+        </div>
+      </div>
+      <!-- SCROLLABLE LIST -->
+      <div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;">
+        <div id="home-members-list"></div>
+      </div>
+    </div>
+    <button class="fab-take" onclick="startAttendance()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+      Take attendance
+    </button>
+    <div class="bottom-nav">
+      <button class="nav-item active" id="nav-h1" onclick="goHome()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+      </button>
+      <button class="nav-item" id="nav-r1" onclick="goRecords()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Records
+      </button>
+    </div>
+  </div>
+
+  <!-- TAKE ATTENDANCE -->
+  <div class="screen" id="screen-attendance">
+    <div class="topbar">
+      <button class="back-btn" onclick="backFromAttendance()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div style="flex:1"><div class="topbar-title">Take Attendance</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <!-- STICKY TOP SECTION -->
+      <div style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
+        <div class="date-bar" onclick="openDatePicker()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="date-bar-text" id="att-date-text"></span>
+          <svg style="width:16px;height:16px;color:var(--text3)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+        <input type="date" id="att-date-input" onchange="onDateChange(this.value)"/>
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="search-input" id="att-search" placeholder="Search contacts" oninput="renderAttMembers(this.value)"/>
+        </div>
+        <div id="att-stat-tiles"></div>
+        <div class="section-label">All Members</div>
+        <div class="att-table-header">
+          <span class="att-th att-th-sr">SR.</span>
+          <span class="att-th att-th-name">NAMES</span>
+          <span class="att-th att-th-status">STATUS</span>
+        </div>
+      </div>
+      <!-- SCROLLABLE MEMBERS LIST -->
+      <div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;">
+        <div id="att-members-list"></div>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="action-btn cancel" onclick="backFromAttendance()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        Cancel
+      </button>
+      <button class="action-btn save" id="save-record-btn" onclick="saveRecord()" style="opacity:0.4;cursor:pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        Save Record
+      </button>
+    </div>
+  </div>
+
+  <!-- RECORDS -->
+  <div class="screen" id="screen-records">
+    <div class="topbar">
+      <div style="flex:1"><div class="topbar-title">Records</div></div>
+    </div>
+    <div class="body">
+      <div class="section-label">All Records</div>
+      <div class="search-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-input" id="rec-search" placeholder="Search by date" oninput="renderRecords(this.value)"/>
+      </div>
+      <div id="records-list"></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" id="nav-h2" onclick="goHome()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+      </button>
+      <button class="nav-item active" id="nav-r2" onclick="goRecords()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Records
+      </button>
+    </div>
+  </div>
+
+  <!-- PAST RECORD -->
+  <div class="screen" id="screen-past-record">
+    <div class="topbar">
+      <button class="back-btn" onclick="goRecords()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div style="flex:1"><div class="topbar-title">Past Record</div></div>
+      <button class="back-btn" id="delete-record-btn" onclick="deleteRecord()" style="display:none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
+      </button>
+    </div>
+    <div id="past-record-body" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;"></div>
+    <div class="action-bar" id="draft-resume-bar" style="display:none">
+      <button class="action-btn save" style="flex:1;background:#111112;color:#fff" onclick="resumeDraft()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Resume Draft
+      </button>
+    </div>
+    <div class="action-bar" id="pdf-download-bar" style="display:none">
+      <button class="action-btn save" style="flex:1;background:#111112;color:#fff" onclick="downloadPDF()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Download PDF
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-root"></div>
+</div>
+
+<script>
+/* ─── SUPABASE ─────────────────────────────── */
+const SUPA_URL = 'https://lcsscdpaffiorizgovfu.supabase.co';
+const SUPA_KEY = 'sb_publishable_VQ8kWeHxvk2KseqO3_5wFw_EA3Xcl5M';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+/* ─── STATE ────────────────────────────────── */
+let members = [];
+let records = [];
+let currentAtt = null;
+let _pastMs = [];
+let viewingRecordId = null;
+
+const PRELOADED = [
+  ['Girdhar','Dudani'],['Pooja','Hurkat'],['Nemish','Mahendra'],['Saurav','Chhangani'],
+  ['Goraj','Bawankule'],['Rohit','Bhojwani'],['Pparas','Chhabria'],['Ketan','Fiske'],
+  ['Shreyansh','Jain'],['Aman','Bobde'],['Suraj','Gupta'],['Abhishek','Jhawar'],
+  ['Shiril','Vaswani'],['Satyendra','Tiwari'],['Lallit','Nathhani'],['Girish','Palod'],
+  ['Gopikishan','Dayani'],['Rahul','Kishnani'],['Deepak','Krishnani'],['Mayur','Wadhwani'],
+  ['Disha','Anwani'],['Harshvardhan','Pasari'],['Rajiv','Singh'],['Vijaykumar','Salwe'],
+  ['Kamal','Rathii'],['Hussain','Bharmall'],['Rashi','Laddha'],['Vijay','Patel'],
+  ['Sanjay','Basantani'],['Santosh','Mane'],['Mohsin','Khan'],['Bhavin','Patel'],
+  ['Kaushik','Patel'],['Mithun','Patil'],['Chetan','Chavhan'],['Dinesh','Gyanchandani'],
+  ['Vikram','Keswani'],['Swapnil','Kalamkar'],['Roshan','Sadhwani'],['Hitesh','Parse'],
+  ['Mohammad','Rehan'],['Minal','Kharwade'],['Romit','Patel'],['Akshay','Mandankar'],
+  ['Dhammadeep','Gajbe'],['Sohel','Ahmed'],['Aniket','Dumanwar'],['Sougat','Nandy'],
+  ['Quresh','Ezzi'],['Ankit','Kothari'],['Gopal','Gadewar']
+];
+
+/* ─── HELPERS ──────────────────────────────── */
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const formatDate = iso => { if(!iso)return''; const[y,mo,d]=iso.split('-'); return `${d.padStart(2,'0')}/${mo.padStart(2,'0')}/${y.slice(2)}`; };
+const getCounts = ms => ({ P:ms.filter(m=>m.status==='P').length, A:ms.filter(m=>m.status==='A').length, L:ms.filter(m=>m.status==='L').length, S:ms.filter(m=>m.status==='S').length, unmarked:ms.filter(m=>m.status==='').length });
+const chevron = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px;color:var(--text3);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`;
+const xIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.getElementById('app').appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+/* ─── SCREENS ──────────────────────────────── */
+function _show(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  closeModal();
+}
+function setLoading(msg='Loading...') {
+  document.getElementById('loading-text').textContent = msg;
+  _show('screen-loading');
+}
+function goHome() {
+  _show('screen-home');
+  setNavActive('home');
+  renderHomeMembers();
+}
+async function goRecords() {
+  setLoading('Loading records...');
+  const {data,error} = await sb.from('records').select('*').order('date',{ascending:false});
+  if(error){ showToast('Error loading records'); return; }
+  records = data||[];
+  _show('screen-records');
+  setNavActive('records');
+  renderRecords();
+}
+function setNavActive(tab) {
+  document.getElementById('nav-h1').className = 'nav-item' + (tab==='home'?' active':'');
+  document.getElementById('nav-h2').className = 'nav-item' + (tab==='home'?' active':'');
+  document.getElementById('nav-r1').className = 'nav-item' + (tab==='records'?' active':'');
+  document.getElementById('nav-r2').className = 'nav-item' + (tab==='records'?' active':'');
+}
+
+/* ─── MODAL ────────────────────────────────── */
+function showModal(html, centered=false) {
+  document.getElementById('modal-root').innerHTML =
+    `<div class="modal-overlay${centered?' centered':''}" id="modal-overlay" onclick="if(event.target.id==='modal-overlay')closeModal()">${html}</div>`;
+}
+function closeModal() { document.getElementById('modal-root').innerHTML=''; }
+function showConfirm(title, msg, okLabel, onOk, cancelLabel='Cancel') {
+  showModal(`<div class="modal-card">
+    <div class="confirm-title">${title}</div>
+    <div class="confirm-msg">${msg}</div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">${cancelLabel}</button>
+      <button class="btn btn-primary" onclick="(${onOk.toString()})()"> ${okLabel}</button>
+    </div>
+  </div>`, true);
+}
+
+/* ─── AUTH ─────────────────────────────────── */
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
+  errEl.textContent = '';
+  if(!email||!pass){ errEl.textContent='Please enter email and password.'; return; }
+  btn.disabled=true; btn.textContent='Signing in...';
+  const {error} = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent='Incorrect email or password.'; btn.disabled=false; btn.textContent='Sign In'; return; }
+  await initApp();
+}
+
+async function doLogout() {
+  showConfirm('Sign out','Are you sure you want to sign out?','Sign out', async function(){
+    await sb.auth.signOut();
+    members=[]; records=[]; currentAtt=null;
+    closeModal();
+    _show('screen-login');
+    document.getElementById('login-pass').value='';
+    document.getElementById('login-btn').disabled=false;
+    document.getElementById('login-btn').textContent='Sign In';
+  });
+}
+
+/* ─── INIT ─────────────────────────────────── */
+async function initApp() {
+  setLoading('Loading members...');
+  const {data:m, error} = await sb.from('members').select('*').eq('is_active',true).order('first_name');
+  if(error){
+    document.getElementById('loading-text').textContent = 'Error: ' + error.message;
+    return;
+  }
+  members = m||[];
+  goHome();
+}
+
+/* ─── HOME ─────────────────────────────────── */
+function renderHomeMembers(filter='') {
+  const el = document.getElementById('home-members-list');
+  const q = filter.toLowerCase();
+  const filtered = members.filter(m=>`${m.first_name} ${m.last_name}`.toLowerCase().includes(q));
+  if(!filtered.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">${members.length?'No results':'No members yet'}</div><div class="empty-sub">${members.length?'Try a different search.':'Tap "+ Add member" above.'}</div></div>`;
+    return;
+  }
+  el.innerHTML = filtered.map((m)=>`
+    <div class="member-row">
+      <span class="sr-num">${members.indexOf(m)+1}</span>
+      <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+      <button class="icon-btn" onclick="openEditMember('${m.id}')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+      </button>
+      <button class="icon-btn danger" onclick="deleteMember('${m.id}')">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+function openAddMember() {
+  showModal(`<div class="modal-sheet">
+    <div style="padding:20px">
+      <div class="modal-title">Add Member</div>
+      <div style="margin-top:14px">
+        <div class="form-field"><label class="form-label">First Name</label>
+          <input class="form-input" id="add-fn" placeholder="e.g. Abhishek" onkeydown="if(event.key==='Enter')document.getElementById('add-ln').focus()"/>
+        </div>
+        <div class="form-field"><label class="form-label">Last Name</label>
+          <input class="form-input" id="add-ln" placeholder="e.g. Jhawar" onkeydown="if(event.key==='Enter')confirmAdd()"/>
+        </div>
+      </div>
+      <div class="modal-btns"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="confirmAdd()">Add</button></div>
+    </div>
+  </div>`);
+  setTimeout(()=>document.getElementById('add-fn')?.focus(),100);
+}
+async function confirmAdd() {
+  const fn=(document.getElementById('add-fn')?.value||'').trim();
+  const ln=(document.getElementById('add-ln')?.value||'').trim();
+  if(!fn) return;
+  const {data,error}=await sb.from('members').insert({first_name:fn,last_name:ln,is_active:true}).select().single();
+  if(error){showToast('Error adding member');return;}
+  members.push(data);
+  members.sort((a,b)=>a.first_name.localeCompare(b.first_name));
+  closeModal();
+  renderHomeMembers(document.getElementById('home-search').value);
+  showToast('Member added ✓');
+}
+
+function openEditMember(id) {
+  const m=members.find(x=>x.id===id); if(!m)return;
+  showModal(`<div class="modal-sheet">
+    <div style="padding:20px">
+      <div class="modal-title">Edit Member</div>
+      <div style="margin-top:14px">
+        <div class="form-field"><label class="form-label">First Name</label>
+          <input class="form-input" id="edit-fn" value="${esc(m.first_name)}" onkeydown="if(event.key==='Enter')document.getElementById('edit-ln').focus()"/>
+        </div>
+        <div class="form-field"><label class="form-label">Last Name</label>
+          <input class="form-input" id="edit-ln" value="${esc(m.last_name)}" onkeydown="if(event.key==='Enter')confirmEdit('${id}')"/>
+        </div>
+      </div>
+      <div class="modal-btns"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="confirmEdit('${id}')">Save</button></div>
+    </div>
+  </div>`);
+  setTimeout(()=>{const el=document.getElementById('edit-fn');if(el){el.focus();el.select();}},100);
+}
+async function confirmEdit(id) {
+  const fn=(document.getElementById('edit-fn')?.value||'').trim();
+  const ln=(document.getElementById('edit-ln')?.value||'').trim();
+  if(!fn)return;
+  const {error}=await sb.from('members').update({first_name:fn,last_name:ln}).eq('id',id);
+  if(error){showToast('Error saving');return;}
+  const m=members.find(x=>x.id===id);
+  if(m){m.first_name=fn;m.last_name=ln;}
+  closeModal();
+  renderHomeMembers(document.getElementById('home-search').value);
+  showToast('Saved ✓');
+}
+
+async function deleteMember(id) {
+  const m=members.find(x=>x.id===id); if(!m)return;
+  const name = `${esc(m.first_name)} ${esc(m.last_name)}`;
+  // Embed id directly into the button onclick as a data attribute
+  showModal(`<div class="modal-card">
+    <div class="confirm-title">Remove Member</div>
+    <div class="confirm-msg">Remove <strong>${name}</strong>? They will be hidden from new sessions. Past records are preserved.</div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" id="confirm-delete-btn" data-mid="${id}" onclick="confirmDeleteMember(this.dataset.mid)">Remove</button>
+    </div>
+  </div>`, true);
+}
+
+async function confirmDeleteMember(id) {
+  console.log('Deleting member id:', id);
+  if(!id || id === 'undefined'){ showToast('Error: invalid id'); return; }
+  const {error} = await sb.from('members').update({is_active: false}).eq('id', id);
+  if(error){
+    console.error('Delete error:', error);
+    showToast('Error: ' + error.message);
+    return;
+  }
+  members = members.filter(x => x.id !== id);
+  closeModal();
+  renderHomeMembers(document.getElementById('home-search').value);
+  showToast('Member removed');
+}
+
+/* ─── ATTENDANCE ───────────────────────────── */
+function startAttendance() {
+  if(!members.length){showToast('Add members first');return;}
+  currentAtt = {
+    id: null,
+    date: todayStr(),
+    status: 'draft',
+    members: members.map(m=>({id:m.id, name:`${m.first_name} ${m.last_name}`, status:''}))
+  };
+  document.getElementById('att-date-text').textContent = formatDate(currentAtt.date);
+  document.getElementById('att-date-input').value = currentAtt.date;
+  document.getElementById('att-search').value = '';
+  renderAttStats();
+  renderAttMembers();
+  _show('screen-attendance');
+  pushHistory('screen-attendance');
+}
+
+function resumeDraft() {
+  document.getElementById('att-date-text').textContent = formatDate(currentAtt.date);
+  document.getElementById('att-date-input').value = currentAtt.date;
+  document.getElementById('att-search').value = '';
+  renderAttStats();
+  renderAttMembers();
+  _show('screen-attendance');
+}
+
+function openDatePicker() {
+  const inp=document.getElementById('att-date-input');
+  try{ inp.showPicker(); }catch(e){ inp.click(); }
+}
+function onDateChange(val) {
+  if(!currentAtt||!val)return;
+  currentAtt.date=val;
+  document.getElementById('att-date-text').textContent=formatDate(val);
+}
+
+function setStatus(idx, s) {
+  if(!currentAtt)return;
+  currentAtt.members[idx].status = currentAtt.members[idx].status===s ? '' : s;
+  renderAttStats();
+  renderAttMembers(document.getElementById('att-search').value);
+}
+
+function updateSaveBtn() {
+  const btn = document.getElementById('save-record-btn');
+  if(!btn) return;
+  const unmarked = currentAtt.members.filter(m=>m.status==='').length;
+  if(unmarked === 0) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    btn.style.background = '#111112';
+    btn.style.color = '#fff';
+  } else {
+    btn.disabled = false; // keep enabled so they can still trigger save-as-draft flow
+    btn.style.opacity = unmarked === currentAtt.members.length ? '0.4' : '0.7';
+    btn.style.cursor = 'pointer';
+    btn.style.background = '';
+    btn.style.color = '';
+  }
+}
+
+function renderAttStats() {
+  const c=getCounts(currentAtt.members);
+  document.getElementById('att-stat-tiles').innerHTML=`<div class="stat-tiles">
+    <div class="stat-tile full unmarked" onclick="openAttFilter('')">
+      <span class="stat-tile-label">Unmarked</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count">${c.unmarked}</span>${chevron()}</span>
+    </div>
+    <div class="stat-tile" onclick="openAttFilter('P')">
+      <span class="stat-tile-label">Present</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--green-text)">${c.P}</span>${chevron()}</span>
+    </div>
+    <div class="stat-tile" onclick="openAttFilter('A')">
+      <span class="stat-tile-label">Absent</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--red-text)">${c.A}</span>${chevron()}</span>
+    </div>
+    <div class="stat-tile" onclick="openAttFilter('L')">
+      <span class="stat-tile-label">Late</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--purple-text)">${c.L}</span>${chevron()}</span>
+    </div>
+    <div class="stat-tile" onclick="openAttFilter('S')">
+      <span class="stat-tile-label">Substitute</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--amber-text)">${c.S}</span>${chevron()}</span>
+    </div>
+  </div>`;
+}
+
+function renderAttMembers(filter='') {
+  const q=filter.toLowerCase();
+  const filtered=currentAtt.members.filter(m=>m.name.toLowerCase().includes(q));
+  document.getElementById('att-members-list').innerHTML=filtered.map(m=>{
+    const ri=currentAtt.members.indexOf(m);
+    return `<div class="att-row">
+      <span class="att-sr">${ri+1}</span>
+      <span class="att-name">${esc(m.name)}</span>
+      <div class="pals">${['P','A','L','S'].map(s=>`<button class="pals-btn${m.status===s?' active-'+s:''}" onclick="setStatus(${ri},'${s}')">${s}</button>`).join('')}</div>
+    </div>`;
+  }).join('');
+  updateSaveBtn();
+}
+
+function openAttFilter(sf) {
+  const target=sf===''?currentAtt.members.filter(m=>m.status===''):currentAtt.members.filter(m=>m.status===sf);
+  const labels={'':'Unmarked Members','P':'Present Members','A':'Absent Members','L':'Late Members','S':'Substitute Members'};
+  if(!target.length)return;
+  const rows=target.map((m,i)=>`<div class="filter-member-row">
+    <span class="filter-sr">${i+1}</span><span class="filter-name">${esc(m.name)}</span>
+    <div class="filter-pals">${['P','A','L','S'].map(s=>{
+      const ri=currentAtt.members.indexOf(m);
+      return `<button class="pals-btn${m.status===s?' active-'+s:''}" onclick="setStatusModal(${ri},'${s}')">${s}</button>`;
+    }).join('')}</div>
+  </div>`).join('');
+  showModal(`<div class="modal-sheet">
+    <div class="modal-sheet-header">
+      <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
+      <div class="att-table-header"><span class="att-th att-th-sr">SR.</span><span class="att-th att-th-name">NAMES</span><span class="att-th att-th-status">STATUS</span></div>
+    </div>
+    <div class="modal-sheet-body">${rows}</div>
+  </div>`);
+}
+function setStatusModal(ri,s){
+  currentAtt.members[ri].status=currentAtt.members[ri].status===s?'':s;
+  renderAttStats();
+  renderAttMembers(document.getElementById('att-search').value);
+  // Re-render the modal with updated statuses — don't close it
+  const sf = document.querySelector('.filter-modal-title')?.textContent?.replace(' Members','') || '';
+  const sfMap = {'Present':'P','Absent':'A','Late':'L','Substitute':'S','Unmarked':''};
+  const sfKey = sfMap[sf] !== undefined ? sfMap[sf] : null;
+  if(sfKey !== null) openAttFilter(sfKey);
+}
+
+function backFromAttendance() {
+  const marked=currentAtt.members.filter(m=>m.status!=='').length;
+  if(marked===0){
+    currentAtt=null; goHome();
+  } else {
+    showBackModal(marked);
+  }
+}
+
+function showBackModal(marked) {
+  showModal(`<div class="modal-card" style="position:relative">
+    <button onclick="closeModal()" style="position:absolute;top:0;right:0;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <div class="confirm-title">Save as Draft?</div>
+    <div class="confirm-msg" style="margin-top:8px">${marked} member(s) marked. Going back will save this as a Draft so you can resume later.</div>
+    <div class="modal-btns" style="margin-top:20px">
+      <button class="btn" style="display:flex;align-items:center;gap:6px;color:var(--red);border-color:var(--red)" onclick="discardAttendance()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
+        Discard this record
+      </button>
+      <button class="btn btn-primary" style="display:flex;align-items:center;gap:6px" onclick="saveDraftAndGoBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        Save Draft and go back
+      </button>
+    </div>
+  </div>`, true);
+}
+
+async function saveDraftAndGoBack() {
+  await upsertAtt('draft');
+  currentAtt=null;
+  closeModal();
+  goHome();
+}
+
+async function discardAttendance() {
+  // If record already exists in DB (resumed draft), delete it
+  if(currentAtt && currentAtt.id) {
+    await sb.from('attendance').delete().eq('record_id', currentAtt.id);
+    await sb.from('records').delete().eq('id', currentAtt.id);
+  }
+  currentAtt=null;
+  closeModal();
+  goHome();
+}
+
+async function saveRecord() {
+  const unmarked=currentAtt.members.filter(m=>m.status==='').length;
+  if(unmarked>0){
+    showConfirm('Unmarked Members',`${unmarked} member(s) still unmarked. Save as Draft to finish later, or go back and mark everyone.`,'Save as Draft',async function(){
+      await upsertAtt('draft'); currentAtt=null; closeModal(); await goRecords();
+    });
+    return;
+  }
+  setLoading('Saving...');
+  await upsertAtt('saved');
+  currentAtt=null;
+  await goRecords();
+  showToast('Attendance saved ✓');
+}
+
+async function upsertAtt(status) {
+  const att=currentAtt; att.status=status;
+  if(!att.id){
+    const {data:rec,error}=await sb.from('records').insert({date:att.date,status}).select().single();
+    if(error){showToast('Error saving');return;}
+    att.id=rec.id;
+    await sb.from('attendance').insert(att.members.map(m=>({record_id:rec.id,member_id:m.id,member_name:m.name,status:m.status})));
+  } else {
+    await sb.from('records').update({date:att.date,status}).eq('id',att.id);
+    await sb.from('attendance').delete().eq('record_id',att.id);
+    await sb.from('attendance').insert(att.members.map(m=>({record_id:att.id,member_id:m.id,member_name:m.name,status:m.status})));
+  }
+}
+
+/* ─── RECORDS ──────────────────────────────── */
+function renderRecords(filter='') {
+  const el=document.getElementById('records-list');
+  const q=filter.toLowerCase();
+  const filtered=records.filter(r=>formatDate(r.date).includes(q));
+  if(!filtered.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">${records.length?'No results':'No records yet'}</div><div class="empty-sub">Take your first attendance to see records here.</div></div>`;
+    return;
+  }
+  el.innerHTML=filtered.map(r=>`
+    <div class="record-row" onclick="viewRecord('${r.id}')">
+      <span class="record-date-text">${formatDate(r.date)}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${r.status==='draft'?`<span class="badge badge-draft">Draft</span>`:''}
+        ${chevron()}
+      </div>
+    </div>`).join('');
+}
+
+async function viewRecord(id) {
+  setLoading('Loading...');
+  viewingRecordId = id;
+  const rec=records.find(r=>r.id===id); if(!rec)return;
+  const {data:rows}=await sb.from('attendance').select('*').eq('record_id',id).order('member_name');
+  _pastMs=(rows||[]).map(a=>({id:a.member_id,name:a.member_name,status:a.status}));
+  if(rec.status==='draft') currentAtt={id:rec.id,date:rec.date,status:'draft',members:_pastMs.map(m=>({...m}))};
+  const c=getCounts(_pastMs);
+  document.getElementById('past-record-body').innerHTML=`
+    <div style="display:flex;flex-direction:column;height:100%;min-height:0;">
+      <!-- STICKY TOP -->
+      <div style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
+        <div class="date-bar" style="cursor:default;margin-bottom:12px">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:16px;height:16px;color:var(--text2);flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="date-bar-text">${formatDate(rec.date)}</span>
+          ${rec.status==='saved'?`<span class="date-locked-badge">Date locked</span>`:`<span class="badge badge-draft">Draft</span>`}
+        </div>
+        <div class="search-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="search-input" placeholder="Search contacts" oninput="filterPast(this.value)"/>
+        </div>
+        <div class="stat-tiles" style="margin-bottom:12px">
+          <div class="stat-tile full unmarked" onclick="openPastFilter('')">
+            <span class="stat-tile-label">Unmarked</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count">${c.unmarked}</span>${chevron()}</span>
+          </div>
+          <div class="stat-tile" onclick="openPastFilter('P')">
+            <span class="stat-tile-label">Present</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--green-text)">${c.P}</span>${chevron()}</span>
+          </div>
+          <div class="stat-tile" onclick="openPastFilter('A')">
+            <span class="stat-tile-label">Absent</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--red-text)">${c.A}</span>${chevron()}</span>
+          </div>
+          <div class="stat-tile" onclick="openPastFilter('L')">
+            <span class="stat-tile-label">Late</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--purple-text)">${c.L}</span>${chevron()}</span>
+          </div>
+          <div class="stat-tile" onclick="openPastFilter('S')">
+            <span class="stat-tile-label">Substitute</span><span style="display:flex;align-items:center;gap:4px"><span class="stat-tile-count" style="color:var(--amber-text)">${c.S}</span>${chevron()}</span>
+          </div>
+        </div>
+        <div class="section-label">All Members</div>
+        <div class="att-table-header"><span class="att-th att-th-sr">SR.</span><span class="att-th att-th-name">NAMES</span><span class="att-th att-th-status">STATUS</span></div>
+      </div>
+      <!-- SCROLLABLE LIST -->
+      <div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;">
+        <div id="past-list">${pastRows(_pastMs)}</div>
+      </div>
+    </div>`;
+  _show('screen-past-record');
+  document.getElementById('draft-resume-bar').style.display=rec.status==='draft'?'flex':'none';
+  document.getElementById('pdf-download-bar').style.display=rec.status==='saved'?'flex':'none';
+  document.getElementById('delete-record-btn').style.display=rec.status==='saved'?'flex':'none';
+  pushHistory('screen-past-record');
+}
+
+function deleteRecord() {
+  if(!viewingRecordId) return;
+  showModal(`<div class="modal-card">
+    <div class="confirm-title">Delete Record</div>
+    <div class="confirm-msg">Are you sure you want to permanently delete this attendance record? This cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn" style="background:var(--red);color:#fff;border-color:var(--red)" onclick="confirmDeleteRecord()">Delete</button>
+    </div>
+  </div>`, true);
+}
+
+async function confirmDeleteRecord() {
+  const id = viewingRecordId;
+  await sb.from('attendance').delete().eq('record_id', id);
+  await sb.from('records').delete().eq('id', id);
+  viewingRecordId = null;
+  closeModal();
+  await goRecords();
+  showToast('Record deleted');
+}
+
+function downloadPDF() {
+  const rec = records.find(r=>r.id===viewingRecordId);
+  if(!rec) return;
+  const ms = _pastMs;
+  const date = formatDate(rec.date);
+  // Get day of week
+  const [d,mo,y] = date.split('/');
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayName = dayNames[new Date(`20${y}-${mo}-${d}`).getDay()];
+
+  const statusLabel = {'P':'Present','A':'Absent','L':'Late','S':'Substitute','':'Unmarked'};
+  const statusColor = {'P':'#16a34a','A':'#dc2626','L':'#7c3aed','S':'#d97706','':'#9ca3af'};
+
+  const rows = ms.map((m,i) => `
+    <tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0;color:#6b7280;font-size:13px;width:40px">${i+1}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#111112">${m.name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #f0f0f0;text-align:center">
+        <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;background:${statusColor[m.status]}22;color:${statusColor[m.status]}">${statusLabel[m.status]||'Unmarked'}</span>
+      </td>
+    </tr>`).join('');
+
+  const counts = getCounts(ms);
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>BNI Attendance - ${date}</title>
+<style>
+  body{font-family:'DM Sans',Arial,sans-serif;margin:0;padding:32px;color:#111112;background:#fff;}
+  .header{margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #111112;}
+  .chapter{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#6b7280;margin-bottom:4px;}
+  .title{font-size:24px;font-weight:700;color:#111112;margin-bottom:4px;}
+  .date{font-size:14px;color:#6b7280;}
+  .stats{display:flex;gap:16px;margin-bottom:24px;}
+  .stat{background:#f7f7f8;border-radius:8px;padding:10px 16px;text-align:center;}
+  .stat-num{font-size:20px;font-weight:700;}
+  .stat-lbl{font-size:11px;color:#6b7280;margin-top:2px;}
+  table{width:100%;border-collapse:collapse;}
+  th{text-align:left;padding:8px 12px;font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#9ca3af;border-bottom:2px solid #e4e4e9;}
+  .footer{margin-top:32px;font-size:11px;color:#9ca3af;text-align:center;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="chapter">BNI Edenite Chapter</div>
+  <div class="title">Attendance Record</div>
+  <div class="date">${dayName}, ${date.replace(/\//g, ' / ')}</div>
+</div>
+<div class="stats">
+  <div class="stat"><div class="stat-num" style="color:#16a34a">${counts.P}</div><div class="stat-lbl">Present</div></div>
+  <div class="stat"><div class="stat-num" style="color:#dc2626">${counts.A}</div><div class="stat-lbl">Absent</div></div>
+  <div class="stat"><div class="stat-num" style="color:#7c3aed">${counts.L}</div><div class="stat-lbl">Late</div></div>
+  <div class="stat"><div class="stat-num" style="color:#d97706">${counts.S}</div><div class="stat-lbl">Substitute</div></div>
+  <div class="stat"><div class="stat-num">${ms.length}</div><div class="stat-lbl">Total</div></div>
+</div>
+<table>
+  <thead><tr><th>SR.</th><th>Name</th><th style="text-align:center">Status</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table>
+<div class="footer">Generated by BNI Attendance App &bull; ${date}</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `BNI-Attendance-${date.replace(/\//g,'-')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Download started ✓');
+}
+
+function pastRows(ms, filter='') {
+  const q=filter.toLowerCase();
+  return ms.filter(m=>m.name.toLowerCase().includes(q)).map((m,i)=>`
+    <div class="att-row">
+      <span class="att-sr">${ms.indexOf(m)+1}</span>
+      <span class="att-name">${esc(m.name)}</span>
+      <div class="pals">${['P','A','L','S'].map(s=>`<button class="pals-btn${m.status===s?' active-'+s:''} readonly" disabled>${s}</button>`).join('')}</div>
+    </div>`).join('');
+}
+function filterPast(q) { const el=document.getElementById('past-list'); if(el) el.innerHTML=pastRows(_pastMs,q); }
+function openPastFilter(sf) {
+  const labels={'':'Unmarked Members','P':'Present Members','A':'Absent Members','L':'Late Members','S':'Substitute Members'};
+  const target=sf===''?_pastMs.filter(m=>m.status===''):_pastMs.filter(m=>m.status===sf);
+  if(!target.length)return;
+  const rows=target.map((m,i)=>`<div class="filter-member-row">
+    <span class="filter-sr">${i+1}</span><span class="filter-name">${esc(m.name)}</span>
+    <div class="filter-pals">${['P','A','L','S'].map(s=>`<button class="pals-btn${m.status===s?' active-'+s:''} readonly" disabled>${s}</button>`).join('')}</div>
+  </div>`).join('');
+  showModal(`<div class="modal-sheet">
+    <div class="modal-sheet-header">
+      <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
+      <div class="att-table-header"><span class="att-th att-th-sr">SR.</span><span class="att-th att-th-name">NAMES</span><span class="att-th att-th-status">STATUS</span></div>
+    </div>
+    <div class="modal-sheet-body">${rows}</div>
+  </div>`);
+}
+
+/* ─── ANDROID BACK BUTTON ──────────────────── */
+// Push a state whenever we navigate to a screen so back button can be intercepted
+function pushHistory(screenId) {
+  history.pushState({ screen: screenId }, '', '');
+}
+
+window.addEventListener('popstate', function(e) {
+  const currentScreen = document.querySelector('.screen.active')?.id;
+
+  if (currentScreen === 'screen-home') {
+    // On home screen — let the phone go to its own home screen
+    // Don't push state, just let it propagate naturally
+    return;
+  }
+
+  if (currentScreen === 'screen-records') {
+    // Go back to app home
+    goHome();
+    pushHistory('screen-home');
+    return;
+  }
+
+  if (currentScreen === 'screen-past-record') {
+    // Go back to records
+    goRecords();
+    pushHistory('screen-records');
+    return;
+  }
+
+  if (currentScreen === 'screen-attendance') {
+    // Trigger the same logic as the in-app back button
+    backFromAttendance();
+    // Re-push state so back button keeps working if they stay on the screen
+    pushHistory('screen-attendance');
+    return;
+  }
+
+  if (currentScreen === 'screen-loading' || currentScreen === 'screen-login') {
+    return;
+  }
+});
+
+// Override goHome, goRecords, _show for attendance to push history states
+const _origGoHome = goHome;
+goHome = function() {
+  _origGoHome();
+  pushHistory('screen-home');
+};
+
+const _origGoRecords = goRecords;
+goRecords = async function() {
+  await _origGoRecords();
+  pushHistory('screen-records');
+};
+
+/* ─── BOOT ─────────────────────────────────── */
+(async () => {
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if(error) { console.error('Session error:', error); return; }
+    if(session) {
+      await initApp();
+    } else {
+      _show('screen-login');
+    }
+  } catch(e) {
+    console.error('Boot error:', e);
+    _show('screen-login');
+  }
+})();
+
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
+}
+</script>
+</body>
+</html>
