@@ -1220,7 +1220,7 @@ function renderPastList(filter='') {
       return `<div class="att-row">
         <span class="att-sr">${ri+1}</span>
         <span class="att-name">${m.name}</span>
-        <div class="pals pals-active"><button class="pb pb-slot-first" onclick="editStatusTap(${ri},'P')"><span class="pb-lbl">P</span></button><button class="pb pb-slot-mid" onclick="editStatusTap(${ri},'A')"><span class="pb-lbl">A</span></button><button class="pb pb-slot-mid" onclick="editStatusTap(${ri},'L')"><span class="pb-lbl">L</span></button><button class="pb pb-slot-last" onclick="editStatusTap(${ri},'S')"><span class="pb-lbl">S</span></button>${m.status?`<button class="pb pb-sel pb-sel-${m.status}" onclick="editStatusTap(${ri},'${{m.status}}')" ><span class="pb-lbl">${m.status}</span></button>`:``}</div>
+        <div class="pals pals-active"><button class="pb pb-slot-first" onclick="editStatusTap(${ri},'P')"><span class="pb-lbl">P</span></button><button class="pb pb-slot-mid" onclick="editStatusTap(${ri},'A')"><span class="pb-lbl">A</span></button><button class="pb pb-slot-mid" onclick="editStatusTap(${ri},'L')"><span class="pb-lbl">L</span></button><button class="pb pb-slot-last" onclick="editStatusTap(${ri},'S')"><span class="pb-lbl">S</span></button>${m.status?`<button class="pb pb-sel pb-sel-${m.status}" onclick="editStatusTap(${ri},'${m.status}')" ><span class="pb-lbl">${m.status}</span></button>`:``}</div>
       </div>`;
     } else {
       return `<div class="att-row">
@@ -1274,7 +1274,7 @@ function openPastFilter(sf) {
     if(_editMode){
       return `<div class="filter-member-row">
         <span class="filter-sr">${i+1}</span><span class="filter-name">${esc(m.name)}</span>
-        <div class="pals pals-active"><button class="pb pb-slot-first" onclick="editStatusFromFilter(${ri},'P')"><span class="pb-lbl">P</span></button><button class="pb pb-slot-mid" onclick="editStatusFromFilter(${ri},'A')"><span class="pb-lbl">A</span></button><button class="pb pb-slot-mid" onclick="editStatusFromFilter(${ri},'L')"><span class="pb-lbl">L</span></button><button class="pb pb-slot-last" onclick="editStatusFromFilter(${ri},'S')"><span class="pb-lbl">S</span></button>${m.status?`<button class="pb pb-sel pb-sel-${m.status}" onclick="editStatusFromFilter(${ri},'${{m.status}}')" ><span class="pb-lbl">${m.status}</span></button>`:``}</div>
+        <div class="pals pals-active"><button class="pb pb-slot-first" onclick="editStatusFromFilter(${ri},'P')"><span class="pb-lbl">P</span></button><button class="pb pb-slot-mid" onclick="editStatusFromFilter(${ri},'A')"><span class="pb-lbl">A</span></button><button class="pb pb-slot-mid" onclick="editStatusFromFilter(${ri},'L')"><span class="pb-lbl">L</span></button><button class="pb pb-slot-last" onclick="editStatusFromFilter(${ri},'S')"><span class="pb-lbl">S</span></button>${m.status?`<button class="pb pb-sel pb-sel-${m.status}" onclick="editStatusFromFilter(${ri},'${m.status}')" ><span class="pb-lbl">${m.status}</span></button>`:``}</div>
       </div>`;
     } else {
       return `<div class="filter-member-row">
