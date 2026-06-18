@@ -18,7 +18,7 @@
 
 .pals{display:flex;gap:5px;width:130px;justify-content:flex-end;}
 .pals-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--font);}
-.pals-btn.active-P{background:var(--green);border-color:var(--green);color:#fff;}
+.pals-btn.active-P{background:var(--present);border-color:var(--present);color:#fff;}
 .pals-btn.active-A{background:var(--red);border-color:var(--red);color:#fff;}
 .pals-btn.active-L{background:var(--purple);border-color:var(--purple);color:#fff;}
 .pals-btn.active-S{background:var(--amber);border-color:var(--amber);color:#fff;}
