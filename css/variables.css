@@ -1,0 +1,52 @@
+/* ──────────────────────────────────────────────
+   DESIGN TOKENS
+   Change a color/size here and it updates everywhere.
+   ────────────────────────────────────────────── */
+:root{
+  --bg:#ffffff;--bg2:#f7f7f8;--bg3:#f0f0f2;
+  --text:#111112;--text2:#6b6b78;--text3:#a0a0ab;
+  --border:#e4e4e9;--border2:#d0d0d8;
+  --green:#22c55e;--green-bg:#f0fdf4;--green-text:#15803d;
+  --red:#ef4444;--red-bg:#fef2f2;--red-text:#b91c1c;
+  --amber:#f59e0b;--amber-bg:#fffbeb;--amber-text:#92400e;
+  --purple:#8b5cf6;--purple-bg:#f5f3ff;--purple-text:#5b21b6;
+  --blue:#3b82f6;
+  --nav-h:60px;--topbar-h:56px;
+  --radius:12px;--radius-sm:8px;
+  --shadow-md:0 4px 12px rgba(0,0,0,0.10);
+  --font:'Inter',sans-serif;
+
+  /* ── PALS pill: unselected slot (enabled / active variant) */
+  --pals-slot-bg:#f6f6f6;
+  --pals-slot-border:#e3e3e3;
+  --pals-slot-text:#8b8e8d;
+
+  /* ── PALS pill: unselected slot (disabled / readonly variant) */
+  --pals-slot-bg-disabled:#ffffff;
+  --pals-slot-border-disabled:#f5f5f5;
+  --pals-slot-text-disabled:#ebebeb;
+
+  /* ── PALS pill: selected — Present */
+  --pals-P-bg:#83d1a2;
+  --pals-P-border:#59ab7c;
+  --pals-P-text:#025a28;
+  --pals-P-glow:0px 0px 2px 3px rgba(255,255,255,0.25) inset, 0px 0px 1px 2px rgba(255,255,255,0.20) inset;
+
+  /* ── PALS pill: selected — Absent */
+  --pals-A-bg:#f08a64;
+  --pals-A-border:#e0774e;
+  --pals-A-text:#6e2001;
+  --pals-A-glow:0px 0px 2px 3px rgba(255,255,255,0.20) inset, 0px 0px 1px 2px rgba(255,255,255,0.20) inset;
+
+  /* ── PALS pill: selected — Late */
+  --pals-L-bg:#61a1f3;
+  --pals-L-border:#2c73d8;
+  --pals-L-text:#023379;
+  --pals-L-glow:0px 0px 2px 3px rgba(255,255,255,0.20) inset, 0px 0px 1px 2px rgba(255,255,255,0.20) inset;
+
+  /* ── PALS pill: selected — Substitute */
+  --pals-S-bg:#fbda83;
+  --pals-S-border:#e1aa00;
+  --pals-S-text:#765901;
+  --pals-S-glow:0px 0px 2px 3px rgba(255,255,255,0.40) inset, 0px 0px 1px 2px rgba(255,255,255,0.40) inset;
+}
