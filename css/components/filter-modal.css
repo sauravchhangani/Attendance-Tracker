@@ -1,0 +1,12 @@
+/* ──────────────────────────────────────────────
+   FILTER MODAL
+   The per-member rows inside the "filter by status"
+   bottom sheet on the attendance/past-record screens.
+   ────────────────────────────────────────────── */
+.filter-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.filter-modal-title{font-size:16px;font-weight:600;color:var(--text);}
+.filter-member-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.filter-member-row:last-child{border-bottom:none;}
+.filter-sr{width:28px;font-size:12px;color:var(--text3);flex-shrink:0;}
+.filter-name{flex:1;font-size:14px;color:var(--text);}
+.filter-pals{display:flex;gap:4px;}

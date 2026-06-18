@@ -1,0 +1,10 @@
+/* ──────────────────────────────────────────────
+   ACTION BAR
+   The bottom Cancel/Save-style button bars used on
+   Take Attendance, Past Record, and Edit Mode.
+   ────────────────────────────────────────────── */
+.action-bar{display:flex;border-top:1px solid var(--border);flex-shrink:0;}
+.action-btn{flex:1;height:52px;border:none;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.action-btn.cancel{background:var(--bg2);color:var(--text2);border-right:1px solid var(--border);}
+.action-btn.save{background:var(--bg);color:var(--text);}
+.action-btn svg{width:16px;height:16px;}

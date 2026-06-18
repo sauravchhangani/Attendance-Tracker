@@ -1,0 +1,22 @@
+/* ──────────────────────────────────────────────
+   MEMBER ROW (Home screen list)
+   The "SR / Name / Edit / Delete" rows and their
+   column header.
+   ────────────────────────────────────────────── */
+.table-header{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
+.th-sr{width:36px;flex-shrink:0;}
+.th-name{flex:1;}
+.th-actions{width:80px;text-align:right;}
+
+.member-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.member-row:last-child{border-bottom:none;}
+.sr-num{width:20px;font-size:13px;color:var(--text3);font-weight:500;text-align:center;flex-shrink:0;}
+.member-name-text{flex:1;font-size:15px;color:var(--text);}
+
+.icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
+.icon-btn.danger:active{background:var(--red-bg);color:var(--red);}
+.icon-btn svg{width:17px;height:17px;}
+
+.add-member-btn{display:flex;align-items:center;gap:8px;justify-content:flex-end;padding:0;border:none;background:none;cursor:pointer;color:var(--blue);font-family:var(--font);font-size:14px;font-weight:500;margin-bottom:14px;}
+.add-member-btn svg{width:18px;height:18px;}

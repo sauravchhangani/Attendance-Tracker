@@ -1,0 +1,9 @@
+/* ──────────────────────────────────────────────
+   LOADING SPINNER & TOAST
+   ────────────────────────────────────────────── */
+.loading-screen{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--text);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-text{font-size:14px;color:var(--text2);}
+
+.toast{position:absolute;bottom:calc(var(--nav-h)+12px);left:50%;transform:translateX(-50%);background:#111112;color:#fff;padding:10px 18px;border-radius:100px;font-size:13px;font-weight:500;white-space:nowrap;z-index:200;pointer-events:none;}
