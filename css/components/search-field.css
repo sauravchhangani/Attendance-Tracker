@@ -1,9 +1,0 @@
-/* ──────────────────────────────────────────────
-   SEARCH FIELD
-   Used on Home, Take Attendance, and Records screens.
-   ────────────────────────────────────────────── */
-.search-wrap{position:relative;margin-bottom:14px;}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3);pointer-events:none;}
-.search-input{width:100%;height:40px;padding:0 12px 0 36px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg2);font-family:var(--font);font-size:14px;color:var(--text);outline:none;}
-.search-input:focus{border-color:var(--blue);background:var(--bg);}
-.search-input::placeholder{color:var(--text3);}
