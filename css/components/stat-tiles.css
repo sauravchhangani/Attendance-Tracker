@@ -1,0 +1,59 @@
+/* ──────────────────────────────────────────────
+   STAT TILES (sublist)
+   The Present/Absent/Late/Substitute/Unmarked count
+   tiles shown above attendance lists. Tapping one
+   opens a filtered member list drawer.
+
+   Two states, driven purely by count (set in app.js):
+   • Active   — count > 0 → white bg, dark text/chevron
+   • Inactive — count = 0 → grey bg, muted text/chevron
+   "Inactive" is unrelated to selection — it's always
+   just "is there anyone in this bucket right now".
+   ────────────────────────────────────────────── */
+
+.stat-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+
+.stat-tile{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:44px;
+  padding:12px 10px 12px 12px;
+  border-radius:8px;
+  outline:1px solid var(--stat-active-border);
+  outline-offset:-1px;
+  background:var(--stat-active-bg);
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.stat-tile.full{grid-column:1/-1;}
+
+.stat-tile-label{
+  font-size:14px;
+  font-weight:500;
+  color:var(--stat-active-text);
+  font-family:var(--font);
+}
+.stat-tile-count{
+  font-size:14px;
+  font-weight:500;
+  color:var(--stat-active-text);
+  font-family:var(--font);
+}
+.stat-tile-chevron{
+  color:var(--stat-active-chevron);
+  flex-shrink:0;
+}
+
+/* ── Inactive state — zero count */
+.stat-tile.inactive{
+  background:var(--stat-inactive-bg);
+  outline-color:var(--stat-inactive-border);
+}
+.stat-tile.inactive .stat-tile-label,
+.stat-tile.inactive .stat-tile-count{
+  color:var(--stat-inactive-text);
+}
+.stat-tile.inactive .stat-tile-chevron{
+  color:var(--stat-inactive-chevron);
+}
