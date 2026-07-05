@@ -1,0 +1,78 @@
+/* ──────────────────────────────────────────────
+   TOPBAR & BOTTOM NAV
+   ────────────────────────────────────────────── */
+
+.topbar{
+  height:80px;
+  padding:30px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--bg);
+  border-bottom:1px solid #E7E7E8;
+  flex-shrink:0;
+  z-index:10;
+  box-sizing:border-box;
+}
+
+.topbar-title{
+  font-size:16px;
+  font-weight:600;
+  color:#606264;
+  font-family:var(--font);
+  letter-spacing:0.06em;
+  text-align:center;
+  flex:1;
+}
+
+/* Back button — bare icon, no background circle */
+.back-btn{
+  width:18px;
+  height:18px;
+  border:none;
+  background:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  flex-shrink:0;
+  color:#000000;
+}
+.back-btn svg{
+  width:18px;
+  height:18px;
+}
+
+/* Trailing spacer — keeps title centered when there's a back btn on left */
+.topbar-trail{
+  width:18px;
+  flex-shrink:0;
+}
+
+/* ── Bottom nav */
+.bottom-nav{height:var(--nav-h);display:flex;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:var(--font);font-size:11px;font-weight:500;}
+.nav-item.active{color:var(--text);}
+.nav-item svg{width:22px;height:22px;}
+
+.logout-btn{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:none;font-family:var(--font);font-size:13px;color:var(--text2);cursor:pointer;}
+
+/* Delete button — Past Record screen trailing icon */
+.delete-btn{
+  padding:8px;
+  background:#ffffff;
+  border-radius:8px;
+  outline:1px #E9E9E9 solid;
+  outline-offset:-1px;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.delete-btn svg{
+  width:16px;
+  height:16px;
+}
