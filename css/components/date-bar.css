@@ -1,9 +1,0 @@
-/* ──────────────────────────────────────────────
-   DATE BAR
-   The date selector pill on the Take Attendance screen.
-   ────────────────────────────────────────────── */
-.date-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:12px;background:var(--bg2);cursor:pointer;}
-.date-bar svg{width:16px;height:16px;color:var(--text2);flex-shrink:0;}
-.date-bar-text{flex:1;font-size:14px;font-weight:500;color:var(--text);}
-.date-locked-badge{font-size:11px;color:var(--text3);font-weight:500;background:var(--bg3);padding:3px 8px;border-radius:20px;}
-input[type="date"]{display:none;}
