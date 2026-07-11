@@ -10,7 +10,7 @@
 .att-th-status{width:128px;text-align:left;}
 
 /* ── Attendance row */
-.att-row{display:flex;align-items:center;height:48px;padding:12px 0;border-bottom:1px solid var(--att-row-border);gap:8px;}
+.att-row{display:flex;align-items:center;height:48px;padding:12px 16px;border-bottom:1px solid var(--att-row-border);gap:8px;margin:0 -16px;}
 .att-row:last-child{border-bottom:none;}
 .att-sr{width:24px;font-size:14px;color:var(--att-sr-color);font-weight:500;flex-shrink:0;}
 .att-name{flex:1;font-size:14px;color:var(--att-name-color);font-weight:500;line-height:1.3;}
