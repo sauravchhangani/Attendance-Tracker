@@ -31,7 +31,9 @@
 /* When parent has 20px padding (normal modals) */
 .modal-sheet-header .att-table-header{margin:0 -20px;padding:8px 20px;}
 /* When parent has 0 padding (filter drawer with new header) */
-.modal-sheet-header:has(.filter-drawer-header) .att-table-header{margin:0;padding:8px 16px;}
+/* padding matches .filter-drawer-header's 20px and .filter-member-row's
+   effective 20px inset, so header/body columns line up vertically */
+.modal-sheet-header:has(.filter-drawer-header) .att-table-header{margin:0;padding:8px 20px;}
 
 /* Cap list at 9 rows then scroll */
 .filter-modal-body{max-height:432px;}
