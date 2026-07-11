@@ -24,6 +24,10 @@
 .confirm-body{padding:16px;}
 .confirm-msg{font-size:14px;color:#636363;font-weight:500;line-height:1.5;}
 .confirm-msg strong{color:#000000;font-weight:600;}
+/* The action-bar's shadow is meant to lift a fixed bottom tray off
+   the screen content behind it — inside a floating confirm-card it
+   just reads as a stray shadow, so drop it here. */
+.confirm-card .action-bar{box-shadow:none;}
 
 .form-field{margin-bottom:14px;}
 .form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
