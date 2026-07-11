@@ -24,6 +24,7 @@
      ──────────────────────────────────────────────────── -->
 <link rel="stylesheet" href="css/variables.css"/>
 <link rel="stylesheet" href="css/base.css"/>
+<link rel="stylesheet" href="css/components/button.css"/>
 <link rel="stylesheet" href="css/components/topbar.css"/>
 <link rel="stylesheet" href="css/components/search-field.css"/>
 <link rel="stylesheet" href="css/components/member-row.css"/>
@@ -149,12 +150,12 @@
     </div>
     <div class="action-bar">
       <button class="action-btn cancel" onclick="backFromAttendance()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 2.84961C12.6723 2.84961 12.838 2.91826 12.96 3.04004C13.0818 3.16192 13.1503 3.32764 13.1504 3.5C13.1504 3.67246 13.0819 3.83801 12.96 3.95996L8.91895 8L12.96 12.04C13.0202 12.1003 13.0679 12.1723 13.1006 12.251C13.1332 12.3298 13.1504 12.4147 13.1504 12.5C13.1504 12.5854 13.1333 12.6701 13.1006 12.749C13.0679 12.8279 13.0203 12.8996 12.96 12.96C12.8996 13.0203 12.8279 13.0679 12.749 13.1006C12.6701 13.1333 12.5854 13.1504 12.5 13.1504C12.4147 13.1504 12.3298 13.1332 12.251 13.1006C12.1723 13.0679 12.1003 13.0202 12.04 12.96L8 8.91895L3.95996 12.96C3.83801 13.0819 3.67246 13.1504 3.5 13.1504C3.32764 13.1503 3.16192 13.0818 3.04004 12.96C2.91826 12.838 2.84961 12.6723 2.84961 12.5C2.84968 12.3276 2.91815 12.1619 3.04004 12.04L7.08105 8L3.04004 3.95996C2.91826 3.83804 2.84961 3.67233 2.84961 3.5C2.84968 3.32764 2.91815 3.16192 3.04004 3.04004C3.16192 2.91815 3.32764 2.84968 3.5 2.84961C3.67233 2.84961 3.83804 2.91826 3.95996 3.04004L8 7.08105L12.04 3.04004C12.1619 2.91815 12.3276 2.84968 12.5 2.84961Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>
         Cancel
       </button>
-      <button class="action-btn save" id="save-record-btn" onclick="saveRecord()" style="opacity:0.4;cursor:pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        Save Record
+      <button class="action-btn save" id="save-record-btn" onclick="saveRecord()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5547 3.96094C13.727 3.96094 13.8927 4.02959 14.0146 4.15137C14.1365 4.27325 14.205 4.43896 14.2051 4.61133C14.2051 4.78379 14.1366 4.94934 14.0146 5.07129L6.01465 13.0713C5.95429 13.1317 5.88259 13.1802 5.80371 13.2129C5.72489 13.2455 5.64 13.2617 5.55469 13.2617C5.46936 13.2617 5.38449 13.2456 5.30566 13.2129C5.22683 13.1802 5.15505 13.1317 5.09473 13.0713L1.59473 9.57129C1.47295 9.44936 1.4043 9.28366 1.4043 9.11133C1.40437 8.93896 1.47284 8.77325 1.59473 8.65137C1.71661 8.52948 1.88232 8.46101 2.05469 8.46094C2.22702 8.46094 2.39272 8.52959 2.51465 8.65137L5.55469 11.6924L13.0947 4.15137C13.2166 4.02948 13.3823 3.96101 13.5547 3.96094Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>
+        Save
       </button>
     </div>
   </div>
@@ -195,31 +196,31 @@
     </div>
     <div id="past-record-body" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;"></div>
     <div class="action-bar" id="draft-resume-bar" style="display:none">
-      <button class="action-btn save" style="flex:1;background:#111112;color:#fff" onclick="resumeDraft()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <button class="action-btn save" onclick="resumeDraft()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2147_4137)"><path d="M3.5 2.99219V13.0072C3.50181 13.0953 3.52684 13.1813 3.57258 13.2566C3.61831 13.3318 3.68312 13.3937 3.76044 13.4359C3.83777 13.4781 3.92486 13.4991 4.01292 13.4968C4.10097 13.4945 4.18685 13.469 4.26188 13.4228L12.2688 8.41532C12.3394 8.37139 12.3977 8.31018 12.4381 8.23745C12.4786 8.16473 12.4998 8.0829 12.4998 7.99969C12.4998 7.91649 12.4786 7.83466 12.4381 7.76194C12.3977 7.68921 12.3394 7.62799 12.2688 7.58407L4.26188 2.57657C4.18685 2.53042 4.10097 2.5049 4.01292 2.50261C3.92486 2.50032 3.83777 2.52132 3.76044 2.56351C3.68312 2.60569 3.61831 2.66755 3.57258 2.74283C3.52684 2.81811 3.50181 2.90413 3.5 2.99219Z" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2147_4137"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
         Resume Draft
       </button>
     </div>
     <!-- Saved record: Download + Edit (edit hidden if already edited once) -->
     <div class="action-bar" id="pdf-download-bar" style="display:none">
-      <button class="action-btn cancel" id="edit-record-btn" onclick="enterEditMode()" style="border-right:1px solid var(--border)">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-        Edit
+      <button class="action-btn cancel" id="edit-record-btn" onclick="enterEditMode()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2147_7845)"><path d="M5.79313 13.5001H3C2.86739 13.5001 2.74021 13.4474 2.64645 13.3536C2.55268 13.2599 2.5 13.1327 2.5 13.0001V10.207C2.50006 10.0745 2.55266 9.94753 2.64625 9.85383L10.3538 2.14633C10.4475 2.05263 10.5746 2 10.7072 2C10.8397 2 10.9669 2.05263 11.0606 2.14633L13.8538 4.93758C13.9474 5.03134 14.0001 5.15847 14.0001 5.29102C14.0001 5.42357 13.9474 5.5507 13.8538 5.64446L6.14625 13.3538C6.05255 13.4474 5.92556 13.5 5.79313 13.5001Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 4L12 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2147_7845"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+        Edit Record
       </button>
-      <button class="action-btn save" style="flex:1;background:#111112;color:#fff" onclick="downloadPDF()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        Download PDF
+      <button class="action-btn save" onclick="downloadPDF()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2147_7904)"><path d="M11 6.5H12.5C12.6326 6.5 12.7598 6.55268 12.8536 6.64645C12.9473 6.74021 13 6.86739 13 7V13C13 13.1326 12.9473 13.2598 12.8536 13.3536C12.7598 13.4473 12.6326 13.5 12.5 13.5H3.5C3.36739 13.5 3.24021 13.4473 3.14645 13.3536C3.05268 13.2598 3 13.1326 3 13V7C3 6.86739 3.05268 6.74021 3.14645 6.64645C3.24021 6.55268 3.36739 6.5 3.5 6.5H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.5 4L8 1.5L10.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 1.5V8.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2147_7904"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+        Share Record
       </button>
     </div>
     <!-- Edit mode action bar: Cancel + Save Changesss -->
     <div class="action-bar" id="edit-mode-bar" style="display:none">
-      <button class="action-btn cancel" onclick="cancelEditMode()" style="border-right:1px solid var(--border)">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <button class="action-btn cancel" onclick="cancelEditMode()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 2.84961C12.6723 2.84961 12.838 2.91826 12.96 3.04004C13.0818 3.16192 13.1503 3.32764 13.1504 3.5C13.1504 3.67246 13.0819 3.83801 12.96 3.95996L8.91895 8L12.96 12.04C13.0202 12.1003 13.0679 12.1723 13.1006 12.251C13.1332 12.3298 13.1504 12.4147 13.1504 12.5C13.1504 12.5854 13.1333 12.6701 13.1006 12.749C13.0679 12.8279 13.0203 12.8996 12.96 12.96C12.8996 13.0203 12.8279 13.0679 12.749 13.1006C12.6701 13.1333 12.5854 13.1504 12.5 13.1504C12.4147 13.1504 12.3298 13.1332 12.251 13.1006C12.1723 13.0679 12.1003 13.0202 12.04 12.96L8 8.91895L3.95996 12.96C3.83801 13.0819 3.67246 13.1504 3.5 13.1504C3.32764 13.1503 3.16192 13.0818 3.04004 12.96C2.91826 12.838 2.84961 12.6723 2.84961 12.5C2.84968 12.3276 2.91815 12.1619 3.04004 12.04L7.08105 8L3.04004 3.95996C2.91826 3.83804 2.84961 3.67233 2.84961 3.5C2.84968 3.32764 2.91815 3.16192 3.04004 3.04004C3.16192 2.91815 3.32764 2.84968 3.5 2.84961C3.67233 2.84961 3.83804 2.91826 3.95996 3.04004L8 7.08105L12.04 3.04004C12.1619 2.91815 12.3276 2.84968 12.5 2.84961Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>
         Cancel
       </button>
-      <button class="action-btn save" style="flex:1;background:#111112;color:#fff" onclick="saveEditedRecord()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        Save Changes
+      <button class="action-btn save" onclick="saveEditedRecord()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5547 3.96094C13.727 3.96094 13.8927 4.02959 14.0146 4.15137C14.1365 4.27325 14.205 4.43896 14.2051 4.61133C14.2051 4.78379 14.1366 4.94934 14.0146 5.07129L6.01465 13.0713C5.95429 13.1317 5.88259 13.1802 5.80371 13.2129C5.72489 13.2455 5.64 13.2617 5.55469 13.2617C5.46936 13.2617 5.38449 13.2456 5.30566 13.2129C5.22683 13.1802 5.15505 13.1317 5.09473 13.0713L1.59473 9.57129C1.47295 9.44936 1.4043 9.28366 1.4043 9.11133C1.40437 8.93896 1.47284 8.77325 1.59473 8.65137C1.71661 8.52948 1.88232 8.46101 2.05469 8.46094C2.22702 8.46094 2.39272 8.52959 2.51465 8.65137L5.55469 11.6924L13.0947 4.15137C13.2166 4.02948 13.3823 3.96101 13.5547 3.96094Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>
+        Save
       </button>
     </div>
   </div>
