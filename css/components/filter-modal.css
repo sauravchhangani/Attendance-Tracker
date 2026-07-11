@@ -4,15 +4,18 @@
    Matches att-row styling exactly.
    ────────────────────────────────────────────── */
 /* Drawer header — matches topbar style exactly */
+/* Parent .modal-sheet-header has padding:0 when this header is present
+   (see modal (1).css), so no negative margin is needed here to reach
+   the sheet's edges — the old -20px was left over from a layout where
+   the parent still had 20px padding, and it was pulling this header
+   20px past the sheet edge, which is what killed the horizontal spacing. */
 .filter-drawer-header{
   display:flex;
   align-items:center;
   justify-content:space-between;
   height:80px;
-  margin:0 -20px;
-  padding:30px 16px;
+  padding:30px 20px;
   border-bottom:1px solid #E7E7E8;
-  margin-bottom:0;
   box-sizing:border-box;
 }
 .filter-drawer-spacer{width:18px;flex-shrink:0;}
