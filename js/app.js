@@ -345,19 +345,9 @@ function updateSaveBtn() {
   const btn = document.getElementById('save-record-btn');
   if(!btn) return;
   const unmarked = currentAtt.members.filter(m=>m.status==='').length;
-  if(unmarked === 0) {
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    btn.style.background = '#111112';
-    btn.style.color = '#fff';
-  } else {
-    btn.disabled = false; // keep enabled so they can still trigger save-as-draft flow
-    btn.style.opacity = unmarked === currentAtt.members.length ? '0.4' : '0.7';
-    btn.style.cursor = 'pointer';
-    btn.style.background = '';
-    btn.style.color = '';
-  }
+  // Save is only actionable once everyone is marked. To save progress
+  // early, use Cancel -> "Save Draft and go back" instead.
+  btn.disabled = unmarked > 0;
 }
 
 function renderAttStats() {
