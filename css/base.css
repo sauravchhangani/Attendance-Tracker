@@ -8,6 +8,11 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
+/* Kill the default mobile blue tap-flash on buttons/links/divs with
+   onclick. Active/pressed feedback is handled per-component instead
+   (e.g. .action-btn.cancel:active / .action-btn.save:active). */
+*{-webkit-tap-highlight-color:transparent;}
+
 html,body{height:100%;background:var(--bg);font-family:var(--font);overflow:hidden;}
 
 .phone{width:100%;max-width:480px;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:fixed;top:0;left:0;right:0;bottom:0;}
