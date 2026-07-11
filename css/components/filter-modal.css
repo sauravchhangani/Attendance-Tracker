@@ -1,12 +1,24 @@
 /* ──────────────────────────────────────────────
    FILTER MODAL
-   The per-member rows inside the "filter by status"
-   bottom sheet on the attendance/past-record screens.
+   The per-member rows inside the filter bottom sheet.
+   Matches att-row styling exactly.
    ────────────────────────────────────────────── */
 .filter-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .filter-modal-title{font-size:16px;font-weight:600;color:var(--text);}
-.filter-member-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+
+/* Row — negative margins pull border-bottom past modal's 20px padding */
+.filter-member-row{
+  display:flex;
+  align-items:center;
+  height:48px;
+  padding:12px 20px;
+  border-bottom:1px solid var(--att-row-border);
+  gap:8px;
+  margin:0 -20px;
+  box-sizing:border-box;
+}
 .filter-member-row:last-child{border-bottom:none;}
-.filter-sr{width:28px;font-size:12px;color:var(--text3);flex-shrink:0;}
-.filter-name{flex:1;font-size:14px;color:var(--text);}
-.filter-pals{display:flex;gap:4px;}
+
+.filter-sr{width:24px;font-size:14px;color:var(--att-sr-color);font-weight:500;flex-shrink:0;}
+.filter-name{flex:1;font-size:14px;color:var(--att-name-color);font-weight:500;}
+.filter-pals{display:flex;width:128px;justify-content:flex-end;}
