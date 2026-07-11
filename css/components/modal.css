@@ -23,3 +23,10 @@
 
 .confirm-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px;}
 .confirm-msg{font-size:14px;color:var(--text2);line-height:1.6;}
+
+/* Filter drawer overrides */
+/* Pull att-table-header flush with modal edges (counteracts 20px header padding) */
+.modal-sheet-header .att-table-header{margin:0 -20px;padding:8px 20px;}
+
+/* Cap list at 9 rows then scroll */
+.filter-modal-body{max-height:432px;}
