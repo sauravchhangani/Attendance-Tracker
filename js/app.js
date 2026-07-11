@@ -324,6 +324,10 @@ function onPastScroll(el) {
   const top = document.getElementById('past-sticky-top');
   if(top) top.classList.toggle('scrolled', el.scrollTop > 0);
 }
+function onFilterScroll(el) {
+  const top = document.getElementById('filter-sticky-top');
+  if(top) top.classList.toggle('scrolled', el.scrollTop > 0);
+}
 function onDateChange(val) {
   if(!currentAtt||!val)return;
   currentAtt.date=val;
@@ -403,11 +407,11 @@ function openAttFilter(sf) {
     }).join('')}</div>
   </div>`).join('');
   showModal(`<div class="modal-sheet">
-    <div class="modal-sheet-header">
+    <div class="modal-sheet-header" id="filter-sticky-top">
       <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
-      <div class="att-table-header"><span class="att-th att-th-sr">SR.</span><span class="att-th att-th-name">NAMES</span><span class="att-th att-th-status">STATUS</span></div>
+      <div class="att-table-header"><span class="att-th att-th-sr">Sr.</span><span class="att-th att-th-name">Name</span><span class="att-th att-th-status">Status</span></div>
     </div>
-    <div class="modal-sheet-body">${rows}</div>
+    <div class="modal-sheet-body filter-modal-body" onscroll="onFilterScroll(this)">${rows}</div>
   </div>`);
 }
 function setStatusModal(ri,s){
@@ -908,11 +912,11 @@ function openPastFilter(sf) {
     }
   }).join('');
   showModal(`<div class="modal-sheet">
-    <div class="modal-sheet-header">
+    <div class="modal-sheet-header" id="filter-sticky-top">
       <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
-      <div class="att-table-header"><span class="att-th att-th-sr">SR.</span><span class="att-th att-th-name">NAMES</span><span class="att-th att-th-status">STATUS</span></div>
+      <div class="att-table-header"><span class="att-th att-th-sr">Sr.</span><span class="att-th att-th-name">Name</span><span class="att-th att-th-status">Status</span></div>
     </div>
-    <div class="modal-sheet-body">${rows}</div>
+    <div class="modal-sheet-body filter-modal-body" onscroll="onFilterScroll(this)">${rows}</div>
   </div>`);
 }
 
