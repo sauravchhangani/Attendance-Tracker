@@ -39,7 +39,7 @@ const formatDate = iso => { if(!iso)return''; const[y,mo,d]=iso.split('-'); retu
 const getCounts = ms => ({ P:ms.filter(m=>m.status==='P').length, A:ms.filter(m=>m.status==='A').length, L:ms.filter(m=>m.status==='L').length, S:ms.filter(m=>m.status==='S').length, unmarked:ms.filter(m=>m.status==='').length });
 const chevron = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:14px;height:14px;color:var(--text3);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>`;
 const statChevron = () => `<svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" class="stat-tile-chevron"><path d="M11 18L16 13L11 8" stroke="currentColor" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const xIcon = () => `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:18px;height:18px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+const xIcon = () => `<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#xclip)"><path d="M14.0625 3.9375L3.9375 14.0625" stroke="#202322" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.0625 14.0625L3.9375 3.9375" stroke="#202322" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="xclip"><rect width="18" height="18" fill="white"/></clipPath></defs></svg>`;
 
 function showToast(msg) {
   const t = document.createElement('div');
@@ -408,7 +408,7 @@ function openAttFilter(sf) {
   </div>`).join('');
   showModal(`<div class="modal-sheet">
     <div class="modal-sheet-header" id="filter-sticky-top">
-      <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
+      <div class="filter-drawer-header"><div class="filter-drawer-spacer"></div><div class="filter-drawer-title">${labels[sf]}</div><button class="filter-drawer-close" onclick="closeModal()">${xIcon()}</button></div>
       <div class="att-table-header"><span class="att-th att-th-sr">Sr.</span><span class="att-th att-th-name">Name</span><span class="att-th att-th-status">Status</span></div>
     </div>
     <div class="modal-sheet-body filter-modal-body" onscroll="onFilterScroll(this)">${rows}</div>
@@ -419,7 +419,7 @@ function setStatusModal(ri,s){
   renderAttStats();
   renderAttMembers(document.getElementById('att-search').value);
   // Re-render the modal with updated statuses — don't close it
-  const sf = document.querySelector('.filter-modal-title')?.textContent?.replace(' Members','') || '';
+  const sf = document.querySelector('.filter-drawer-title')?.textContent?.replace(' Members','') || '';
   const sfMap = {'Present':'P','Absent':'A','Late':'L','Substitute':'S','Unmarked':''};
   const sfKey = sfMap[sf] !== undefined ? sfMap[sf] : null;
   if(sfKey !== null) openAttFilter(sfKey);
@@ -913,7 +913,7 @@ function openPastFilter(sf) {
   }).join('');
   showModal(`<div class="modal-sheet">
     <div class="modal-sheet-header" id="filter-sticky-top">
-      <div class="filter-modal-header"><div class="filter-modal-title">${labels[sf]}</div><button class="icon-btn" onclick="closeModal()">${xIcon()}</button></div>
+      <div class="filter-drawer-header"><div class="filter-drawer-spacer"></div><div class="filter-drawer-title">${labels[sf]}</div><button class="filter-drawer-close" onclick="closeModal()">${xIcon()}</button></div>
       <div class="att-table-header"><span class="att-th att-th-sr">Sr.</span><span class="att-th att-th-name">Name</span><span class="att-th att-th-status">Status</span></div>
     </div>
     <div class="modal-sheet-body filter-modal-body" onscroll="onFilterScroll(this)">${rows}</div>
