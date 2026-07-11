@@ -1,0 +1,61 @@
+/* ──────────────────────────────────────────────
+   BUTTON
+   All button styling lives here: the simple .btn /
+   .btn-primary pair used inside modals and confirm
+   dialogs, and the .action-btn pill buttons used in
+   the bottom action-bar tray (Take Attendance,
+   Past Record, Edit Mode). To restyle any button
+   anywhere in the app, this is the only file to open.
+   ────────────────────────────────────────────── */
+
+/* ── Modal buttons (Add/Edit/Delete/Confirm dialogs) ── */
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;border:1.5px solid var(--border2);background:var(--bg);color:var(--text);}
+.btn-primary{background:#111112;color:#fff;border-color:#111112;}
+
+/* ── Action-bar tray buttons ── */
+.action-btn{
+  flex:1;
+  height:40px;
+  padding:6px 12px;
+  border:none;
+  border-radius:8px;
+  font-family:var(--font);
+  font-size:16px;
+  font-weight:500;
+  line-height:16px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.action-btn svg{width:16px;height:16px;flex-shrink:0;}
+
+/* Secondary (Cancel / Edit Record) */
+.action-btn.cancel{
+  background:linear-gradient(180deg,#FEFEFE 0%,#F9F9F9 100%);
+  color:#404758;
+  box-shadow:0px -1px 2px rgba(0,0,0,0.08) inset,0px 2px 1px #ffffff inset,0px 0px 0px 0.6px #D9D9D9,0px 1px 4px rgba(0,0,0,0.06),0px 2px 8px rgba(0,0,0,0.03);
+}
+.action-btn.cancel:active{
+  box-shadow:0px -1px 2px rgba(255,255,255,0.20) inset,0px 2px 2px #F8F8F8 inset,0px 0px 0px 0.6px #D9D9D9,0px 1px 4px rgba(0,0,0,0.06),0px 2px 8px rgba(0,0,0,0.03);
+}
+
+/* Primary (Save / Share Record / Resume Draft) */
+.action-btn.save{
+  padding:6px 14px;
+  background:linear-gradient(180deg,#2B2B2B 0%,#1E1E1E 100%);
+  color:#fff;
+  box-shadow:0px -0.5px 0.5px #333333 inset,0px 1px 1px rgba(255,255,255,0.30) inset,0px 0px 0px 0.6px #000000,0px 1px 4px rgba(0,0,0,0.06),0px 2px 8px rgba(0,0,0,0.03);
+}
+.action-btn.save:active{
+  box-shadow:0px -0.5px 0.5px #5B5B5B inset,0px 1px 1px #000000 inset,0px 0px 0px 0.6px #000000;
+}
+
+/* Disabled (Save, before all members are marked) */
+.action-btn.save:disabled{
+  background:#DADADA;
+  color:#ADADAD;
+  box-shadow:none;
+  cursor:not-allowed;
+}
