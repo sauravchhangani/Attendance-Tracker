@@ -118,7 +118,7 @@ const ICON_SIGNOUT = `<svg width="16" height="16" viewBox="0 0 17 17" fill="none
 
 let _pendingConfirmOk = null;
 function showConfirm(title, msg, okLabel, onOk, opts = {}) {
-  const { cancelLabel='Cancel', okIcon=ICON_CHECK, cancelIcon=ICON_CROSS, danger=false } = opts;
+  const { cancelLabel='Cancel', okIcon=ICON_CHECK, cancelIcon=ICON_CROSS } = opts;
   _pendingConfirmOk = onOk;
   showModal(`<div class="confirm-card">
     <div class="confirm-header">
@@ -131,7 +131,7 @@ function showConfirm(title, msg, okLabel, onOk, opts = {}) {
     </div>
     <div class="action-bar">
       <button class="action-btn cancel" onclick="closeModal()">${cancelIcon}${cancelLabel}</button>
-      <button class="action-btn save${danger?' danger':''}" onclick="_confirmOk()">${okIcon}${okLabel}</button>
+      <button class="action-btn save" onclick="_confirmOk()">${okIcon}${okLabel}</button>
     </div>
   </div>`, true);
 }
