@@ -3,8 +3,40 @@
    The per-member rows inside the filter bottom sheet.
    Matches att-row styling exactly.
    ────────────────────────────────────────────── */
-.filter-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.filter-modal-title{font-size:16px;font-weight:600;color:var(--text);}
+/* Drawer header — matches topbar style exactly */
+.filter-drawer-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:80px;
+  margin:0 -20px;
+  padding:30px 16px;
+  border-bottom:1px solid #E7E7E8;
+  margin-bottom:0;
+  box-sizing:border-box;
+}
+.filter-drawer-spacer{width:18px;flex-shrink:0;}
+.filter-drawer-title{
+  flex:1;
+  text-align:center;
+  font-size:16px;
+  font-weight:600;
+  color:#606264;
+  font-family:var(--font);
+  letter-spacing:0.06em;
+}
+.filter-drawer-close{
+  width:32px;
+  height:32px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  padding:0;
+}
 
 /* Row — negative margins pull border-bottom past modal's 20px padding */
 .filter-member-row{
