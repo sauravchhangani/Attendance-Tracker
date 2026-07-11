@@ -1,0 +1,34 @@
+/* ──────────────────────────────────────────────
+   BOTTOM NAV
+   The Members/Records tab bar pinned to the bottom
+   of the Home and Records screens.
+   ────────────────────────────────────────────── */
+.bottom-nav{
+  height:72px;
+  padding:0 16px;
+  background:var(--bg);
+  box-shadow:0px -4px 8px rgba(0,0,0,0.05),0px -1px 2px rgba(0,0,0,0.02);
+  border:1px solid #E7E7E8;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-shrink:0;
+}
+.nav-item{
+  flex:1;
+  height:100%;
+  background:none;
+  border:none;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:#8B8E8D;
+  font-family:var(--font);
+  font-size:10px;
+  font-weight:500;
+}
+.nav-item svg{width:22px;height:22px;}
+.nav-item.active{color:#212325;font-weight:600;}
