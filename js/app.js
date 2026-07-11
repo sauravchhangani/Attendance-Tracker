@@ -107,15 +107,31 @@ function showModal(html, centered=false) {
     `<div class="modal-overlay${centered?' centered':''}" id="modal-overlay" onclick="if(event.target.id==='modal-overlay')closeModal()">${html}</div>`;
 }
 function closeModal() { document.getElementById('modal-root').innerHTML=''; }
+
+/* Shared confirm-dialog icons — currentColor so each button's
+   text color (set by .action-btn.cancel / .save / .danger) also
+   drives the icon color. */
+const ICON_CROSS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 2.84961C12.6723 2.84961 12.838 2.91826 12.96 3.04004C13.0818 3.16192 13.1503 3.32764 13.1504 3.5C13.1504 3.67246 13.0819 3.83801 12.96 3.95996L8.91895 8L12.96 12.04C13.0202 12.1003 13.0679 12.1723 13.1006 12.251C13.1332 12.3298 13.1504 12.4147 13.1504 12.5C13.1504 12.5854 13.1333 12.6701 13.1006 12.749C13.0679 12.8279 13.0203 12.8996 12.96 12.96C12.8996 13.0203 12.8279 13.0679 12.749 13.1006C12.6701 13.1333 12.5854 13.1504 12.5 13.1504C12.4147 13.1504 12.3298 13.1332 12.251 13.1006C12.1723 13.0679 12.1003 13.0202 12.04 12.96L8 8.91895L3.95996 12.96C3.83801 13.0819 3.67246 13.1504 3.5 13.1504C3.32764 13.1503 3.16192 13.0818 3.04004 12.96C2.91826 12.838 2.84961 12.6723 2.84961 12.5C2.84968 12.3276 2.91815 12.1619 3.04004 12.04L7.08105 8L3.04004 3.95996C2.91826 3.83804 2.84961 3.67233 2.84961 3.5C2.84968 3.32764 2.91815 3.16192 3.04004 3.04004C3.16192 2.91815 3.32764 2.84968 3.5 2.84961C3.67233 2.84961 3.83804 2.91826 3.95996 3.04004L8 7.08105L12.04 3.04004C12.1619 2.91815 12.3276 2.84968 12.5 2.84961Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>`;
+const ICON_CHECK = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5547 3.90918C13.7403 3.90918 13.9185 3.9831 14.0498 4.11426C14.1811 4.24552 14.2548 4.42375 14.2549 4.60938C14.2549 4.7951 14.1811 4.97316 14.0498 5.10449L6.0498 13.1045C5.98484 13.1695 5.90813 13.2216 5.82324 13.2568C5.73826 13.2921 5.64668 13.3096 5.55469 13.3096C5.46287 13.3095 5.37194 13.292 5.28711 13.2568C5.20213 13.2216 5.12458 13.1696 5.05957 13.1045L1.55957 9.60449C1.42842 9.47319 1.35449 9.29497 1.35449 9.10938C1.35457 8.92375 1.42831 8.74552 1.55957 8.61426C1.69083 8.483 1.86906 8.40925 2.05469 8.40918C2.24028 8.40918 2.4185 8.4831 2.5498 8.61426L5.55469 11.6191L13.0596 4.11426C13.1908 3.983 13.3691 3.90925 13.5547 3.90918Z" fill="currentColor" stroke="currentColor" stroke-width="0.4"/></svg>`;
+const ICON_TRASH = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_529_4122)"><path d="M13.5 3.5H2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 6.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 3.5V13C12.5 13.1326 12.4473 13.2598 12.3536 13.3536C12.2598 13.4473 12.1326 13.5 12 13.5H4C3.86739 13.5 3.74021 13.4473 3.64645 13.3536C3.55268 13.2598 3.5 13.1326 3.5 13V3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5V2.5C10.5 2.23478 10.3946 1.98043 10.2071 1.79289C10.0196 1.60536 9.76522 1.5 9.5 1.5H6.5C6.23478 1.5 5.98043 1.60536 5.79289 1.79289C5.60536 1.98043 5.5 2.23478 5.5 2.5V3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_529_4122"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>`;
+const ICON_SIGNOUT = `<svg width="16" height="16" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_529_4505)"><path d="M7.4375 2.65625H3.1875V14.3438H7.4375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.4375 8.5H14.875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.2188 5.84375L14.875 8.5L12.2188 11.1562" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_529_4505"><rect width="17" height="17" fill="white"/></clipPath></defs></svg>`;
+
 let _pendingConfirmOk = null;
-function showConfirm(title, msg, okLabel, onOk, cancelLabel='Cancel') {
+function showConfirm(title, msg, okLabel, onOk, opts = {}) {
+  const { cancelLabel='Cancel', okIcon=ICON_CHECK, cancelIcon=ICON_CROSS, danger=false } = opts;
   _pendingConfirmOk = onOk;
-  showModal(`<div class="modal-card">
-    <div class="confirm-title">${title}</div>
-    <div class="confirm-msg">${msg}</div>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">${cancelLabel}</button>
-      <button class="btn btn-primary" onclick="_confirmOk()"> ${okLabel}</button>
+  showModal(`<div class="confirm-card">
+    <div class="confirm-header">
+      <span class="confirm-header-spacer"></span>
+      <div class="confirm-title">${title}</div>
+      <button class="confirm-close" onclick="closeModal()">${ICON_CROSS}</button>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-msg">${msg}</div>
+    </div>
+    <div class="action-bar">
+      <button class="action-btn cancel" onclick="closeModal()">${cancelIcon}${cancelLabel}</button>
+      <button class="action-btn save${danger?' danger':''}" onclick="_confirmOk()">${okIcon}${okLabel}</button>
     </div>
   </div>`, true);
 }
@@ -141,7 +157,7 @@ async function doLogin() {
 }
 
 async function doLogout() {
-  showConfirm('Sign out','Are you sure you want to sign out?','Sign out', async function(){
+  showConfirm('Sign Out','Are you sure you want to Sign Out?','Sign Out', async function(){
     await sb.auth.signOut();
     members=[]; records=[]; currentAtt=null;
     closeModal();
@@ -149,7 +165,7 @@ async function doLogout() {
     document.getElementById('login-pass').value='';
     document.getElementById('login-btn').disabled=false;
     document.getElementById('login-btn').textContent='Sign In';
-  });
+  }, {okIcon: ICON_SIGNOUT});
 }
 
 /* ─── INIT ─────────────────────────────────── */
@@ -259,15 +275,7 @@ async function confirmEdit(id) {
 async function deleteMember(id) {
   const m=members.find(x=>x.id===id); if(!m)return;
   const name = `${esc(m.first_name)} ${esc(m.last_name)}`;
-  // Embed id directly into the button onclick as a data attribute
-  showModal(`<div class="modal-card">
-    <div class="confirm-title">Remove Member</div>
-    <div class="confirm-msg">Remove <strong>${name}</strong>? They will be hidden from new sessions. Past records are preserved.</div>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" id="confirm-delete-btn" data-mid="${id}" onclick="confirmDeleteMember(this.dataset.mid)">Remove</button>
-    </div>
-  </div>`, true);
+  showConfirm('Delete Member', `Are you sure you want to remove <strong>${name}</strong> from the member list?`, 'Delete', function(){ confirmDeleteMember(id); }, {okIcon: ICON_TRASH});
 }
 
 async function confirmDeleteMember(id) {
@@ -345,9 +353,11 @@ function updateSaveBtn() {
   const btn = document.getElementById('save-record-btn');
   if(!btn) return;
   const unmarked = currentAtt.members.filter(m=>m.status==='').length;
-  // Save is only actionable once everyone is marked. To save progress
-  // early, use Cancel -> "Save Draft and go back" instead.
-  btn.disabled = unmarked > 0;
+  // Disabled only when nobody is marked yet. Once at least one member
+  // is marked, Save becomes clickable — saveRecord() itself decides
+  // whether that click saves a draft (some unmarked) or the final
+  // record (everyone marked).
+  btn.disabled = unmarked === currentAtt.members.length;
 }
 
 function renderAttStats() {
@@ -425,21 +435,18 @@ function backFromAttendance() {
 }
 
 function showBackModal(marked) {
-  showModal(`<div class="modal-card" style="position:relative">
-    <button onclick="closeModal()" style="position:absolute;top:0;right:0;background:none;border:none;cursor:pointer;padding:4px;color:var(--text2)">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-    <div class="confirm-title">Save as Draft?</div>
-    <div class="confirm-msg" style="margin-top:8px">${marked} member(s) marked. Going back will save this as a Draft so you can resume later.</div>
-    <div class="modal-btns" style="margin-top:20px">
-      <button class="btn" style="display:flex;align-items:center;gap:6px;color:var(--red);border-color:var(--red)" onclick="discardAttendance()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
-        Discard this record
-      </button>
-      <button class="btn btn-primary" style="display:flex;align-items:center;gap:6px" onclick="saveDraftAndGoBack()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="width:15px;height:15px"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-        Save Draft and go back
-      </button>
+  showModal(`<div class="confirm-card">
+    <div class="confirm-header">
+      <span class="confirm-header-spacer"></span>
+      <div class="confirm-title">Cancel Record</div>
+      <button class="confirm-close" onclick="closeModal()">${ICON_CROSS}</button>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-msg">You've marked <strong>${marked} members</strong>. Save as a draft to resume later, or delete this record completely.</div>
+    </div>
+    <div class="action-bar">
+      <button class="action-btn cancel danger" onclick="discardAttendance()">${ICON_TRASH}Delete</button>
+      <button class="action-btn save" onclick="saveDraftAndGoBack()">${ICON_CHECK}Save Draft</button>
     </div>
   </div>`, true);
 }
@@ -465,7 +472,7 @@ async function discardAttendance() {
 async function saveRecord() {
   const unmarked=currentAtt.members.filter(m=>m.status==='').length;
   if(unmarked>0){
-    showConfirm('Unmarked Members',`${unmarked} member(s) still unmarked. Save as Draft to finish later, or go back and mark everyone.`,'Save as Draft',async function(){
+    showConfirm('Save Draft',`There are still <strong>${unmarked} member(s)</strong> unmarked. Save this record as a draft.`,'Save Draft',async function(){
       await upsertAtt('draft'); currentAtt=null; closeModal(); await goRecords();
     });
     return;
@@ -571,14 +578,7 @@ async function viewRecord(id) {
 
 function deleteRecord() {
   if(!viewingRecordId) return;
-  showModal(`<div class="modal-card">
-    <div class="confirm-title">Delete Record</div>
-    <div class="confirm-msg">Are you sure you want to permanently delete this attendance record? This cannot be undone.</div>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn" style="background:var(--red);color:#fff;border-color:var(--red)" onclick="confirmDeleteRecord()">Delete</button>
-    </div>
-  </div>`, true);
+  showConfirm('Delete Record', 'Are you sure you want to delete this attendance record? This cannot be undone.', 'Delete', function(){ confirmDeleteRecord(); }, {okIcon: ICON_TRASH});
 }
 
 async function confirmDeleteRecord() {
@@ -743,7 +743,7 @@ body{font-family:Arial,sans-serif;background:#fff;width:794px;padding:40px 40px 
 function enterEditMode() {
   showConfirm(
     'Edit Saved Record',
-    'You are about to edit a saved record. Changes will affect attendance statistics. Are you sure?',
+    'Are you sure you want to edit this attendance record?',
     'Yes, Edit',
     function() {
       closeModal();
@@ -788,8 +788,8 @@ function editStatusTap(idx, newStatus) {
     const statusLabel = {'P':'Present','A':'Absent','L':'Late','S':'Substitute'};
     showConfirm(
       'Change Status',
-      `Change <strong>${m.name}</strong>'s status to <strong>${statusLabel[newStatus]}</strong>?`,
-      'Yes, Change',
+      `Are you sure you want to change <strong>${m.name}</strong>'s status to <strong>${statusLabel[newStatus]}</strong>?`,
+      'Yes, Edit',
       function() { _pastMs[idx].status=newStatus; closeModal(); renderPastStats(); renderPastList(); }
     );
   }
