@@ -25,8 +25,13 @@
 .confirm-msg{font-size:14px;color:var(--text2);line-height:1.6;}
 
 /* Filter drawer overrides */
-/* Pull att-table-header flush with modal edges (counteracts 20px header padding) */
+/* Remove default padding when drawer header manages its own layout */
+.modal-sheet-header:has(.filter-drawer-header){padding:0;}
+/* Pull att-table-header flush with modal edges */
+/* When parent has 20px padding (normal modals) */
 .modal-sheet-header .att-table-header{margin:0 -20px;padding:8px 20px;}
+/* When parent has 0 padding (filter drawer with new header) */
+.modal-sheet-header:has(.filter-drawer-header) .att-table-header{margin:0;padding:8px 16px;}
 
 /* Cap list at 9 rows then scroll */
 .filter-modal-body{max-height:432px;}
