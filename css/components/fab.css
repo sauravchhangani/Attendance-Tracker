@@ -1,5 +1,14 @@
 /* ──────────────────────────────────────────────
-   FAB — "Take attendance" floating button
+   FAB — "Take Attendance" floating button
+   Positioning only. Visual skin (gradient, shadow,
+   font) comes from the shared .action-btn.save
+   component in button.css — this file just says
+   where it floats and that it's pill-shaped.
    ────────────────────────────────────────────── */
-.fab-take{position:absolute;bottom:calc(var(--nav-h) + 16px);right:16px;background:#111112;color:#fff;border:none;border-radius:100px;padding:12px 20px 12px 16px;font-family:var(--font);font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-md);z-index:5;}
-.fab-take svg{width:18px;height:18px;}
+.fab-take{
+  position:absolute;
+  bottom:calc(var(--nav-h) + 16px);
+  right:16px;
+  z-index:5;
+  border-radius:31px;
+}
