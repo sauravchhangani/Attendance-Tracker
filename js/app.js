@@ -534,6 +534,7 @@ async function viewRecord(id) {
   const {data:rows}=await sb.from('attendance').select('*').eq('record_id',id).order('member_name');
   _pastMs=(rows||[]).map(a=>({id:a.member_id,name:a.member_name,status:a.status}));
   if(rec.status==='draft') currentAtt={id:rec.id,date:rec.date,status:'draft',members:_pastMs.map(m=>({...m}))};
+  document.getElementById('past-record-title').textContent = rec.status==='draft' ? 'Draft' : 'Past Record';
   const c=getCounts(_pastMs);
   document.getElementById('past-record-body').innerHTML=`
     <div style="display:flex;flex-direction:column;height:100%;min-height:0;">
