@@ -1,11 +1,37 @@
 /* ──────────────────────────────────────────────
-   RECORD ROW & BADGE
-   Rows on the Records list screen, and the small
-   "Draft" status badge.
+   RECORD ROW & TAG
+   Rows on the Records list screen, their Saved/Draft
+   status tags, and the "All Records" section header.
    ────────────────────────────────────────────── */
-.record-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.record-row{display:flex;align-items:center;justify-content:space-between;height:48px;padding:12px 0;border-bottom:1px solid #F5F5F5;cursor:pointer;}
 .record-row:last-child{border-bottom:none;}
-.record-date-text{font-size:15px;font-weight:500;color:var(--text);}
+.record-date-text{font-size:14px;font-weight:500;color:#252525;}
 
-.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
-.badge-draft{background:var(--amber-bg);color:var(--amber-text);}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:26px;flex-shrink:0;}
+.tag svg{width:14px;height:14px;flex-shrink:0;}
+.tag-saved{background:#F7F3FF;color:#8C3CF9;}
+.tag-draft{background:#EEF5FF;color:#0061F3;width:74px;justify-content:center;}
+
+.record-chevron{width:26px;height:26px;padding:4px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.record-chevron svg{width:16px;height:16px;color:#8B8C8C;}
+
+/* "All Records" section header — grey full-bleed bar, distinct from
+   the plain .section-label used elsewhere. Negative margin pulls it
+   flush with the sheet edges out of the 16px-padded sticky-top. */
+.list-section-header{
+  margin:0 -16px;
+  padding:10px 16px;
+  background:#F7F5F4;
+  border-top:1px solid #E9E9E9;
+  border-bottom:1px solid #E9E9E9;
+  font-size:14px;
+  font-weight:600;
+  color:#707070;
+}
+
+/* Scroll shadow: separates the sticky search/header from the list
+   once it's been scrolled, same mechanism as att-sticky-top /
+   past-sticky-top / filter-sticky-top. Positive offset since this
+   sits at the TOP of the scroll area (shadow falls downward onto
+   the content below it, not upward like a bottom-anchored bar). */
+#records-sticky-top.scrolled{box-shadow:0px 4px 8px rgba(0,0,0,0.05),0px 1px 2px rgba(0,0,0,0.02);}
