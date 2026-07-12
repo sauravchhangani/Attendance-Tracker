@@ -22,7 +22,7 @@
 .member-menu-item.edit{color:#252525;}
 .member-menu-item.delete{color:#F14135;}
 
-.add-member-row{display:flex;align-items:center;gap:10px;padding:16px;margin:0 -16px;border-bottom:1px solid #EBEBEB;cursor:pointer;color:#636363;font-family:var(--font);font-size:14px;font-weight:600;}
+.add-member-row{display:flex;align-items:center;gap:10px;padding:16px;margin:0 -16px;cursor:pointer;color:#636363;font-family:var(--font);font-size:14px;font-weight:600;}
 .add-member-icon{width:36px;height:36px;padding:10px;box-sizing:border-box;background:#F6F6F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#616262;flex-shrink:0;}
 .add-member-icon svg{width:16px;height:16px;}
 
