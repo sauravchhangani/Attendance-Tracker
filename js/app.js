@@ -113,6 +113,8 @@ function closeModal() { document.getElementById('modal-root').innerHTML=''; }
    text color (set by .action-btn.cancel / .save / .danger) also
    drives the icon color. */
 const ICON_CROSS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 2.84961C12.6723 2.84961 12.838 2.91826 12.96 3.04004C13.0818 3.16192 13.1503 3.32764 13.1504 3.5C13.1504 3.67246 13.0819 3.83801 12.96 3.95996L8.91895 8L12.96 12.04C13.0202 12.1003 13.0679 12.1723 13.1006 12.251C13.1332 12.3298 13.1504 12.4147 13.1504 12.5C13.1504 12.5854 13.1333 12.6701 13.1006 12.749C13.0679 12.8279 13.0203 12.8996 12.96 12.96C12.8996 13.0203 12.8279 13.0679 12.749 13.1006C12.6701 13.1333 12.5854 13.1504 12.5 13.1504C12.4147 13.1504 12.3298 13.1332 12.251 13.1006C12.1723 13.0679 12.1003 13.0202 12.04 12.96L8 8.91895L3.95996 12.96C3.83801 13.0819 3.67246 13.1504 3.5 13.1504C3.32764 13.1503 3.16192 13.0818 3.04004 12.96C2.91826 12.838 2.84961 12.6723 2.84961 12.5C2.84968 12.3276 2.91815 12.1619 3.04004 12.04L7.08105 8L3.04004 3.95996C2.91826 3.83804 2.84961 3.67233 2.84961 3.5C2.84968 3.32764 2.91815 3.16192 3.04004 3.04004C3.16192 2.91815 3.32764 2.84968 3.5 2.84961C3.67233 2.84961 3.83804 2.91826 3.95996 3.04004L8 7.08105L12.04 3.04004C12.1619 2.91815 12.3276 2.84968 12.5 2.84961Z" fill="currentColor" stroke="currentColor" stroke-width="0.3"/></svg>`;
+const ICON_X = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 3.5L3.5 12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 12.5L3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const ICON_PLUS = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 8H13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2.5V13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const ICON_CHECK = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5547 3.90918C13.7403 3.90918 13.9185 3.9831 14.0498 4.11426C14.1811 4.24552 14.2548 4.42375 14.2549 4.60938C14.2549 4.7951 14.1811 4.97316 14.0498 5.10449L6.0498 13.1045C5.98484 13.1695 5.90813 13.2216 5.82324 13.2568C5.73826 13.2921 5.64668 13.3096 5.55469 13.3096C5.46287 13.3095 5.37194 13.292 5.28711 13.2568C5.20213 13.2216 5.12458 13.1696 5.05957 13.1045L1.55957 9.60449C1.42842 9.47319 1.35449 9.29497 1.35449 9.10938C1.35457 8.92375 1.42831 8.74552 1.55957 8.61426C1.69083 8.483 1.86906 8.40925 2.05469 8.40918C2.24028 8.40918 2.4185 8.4831 2.5498 8.61426L5.55469 11.6191L13.0596 4.11426C13.1908 3.983 13.3691 3.90925 13.5547 3.90918Z" fill="currentColor" stroke="currentColor" stroke-width="0.4"/></svg>`;
 const ICON_TRASH = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_529_4122)"><path d="M13.5 3.5H2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 6.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 3.5V13C12.5 13.1326 12.4473 13.2598 12.3536 13.3536C12.2598 13.4473 12.1326 13.5 12 13.5H4C3.86739 13.5 3.74021 13.4473 3.64645 13.3536C3.55268 13.2598 3.5 13.1326 3.5 13V3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5V2.5C10.5 2.23478 10.3946 1.98043 10.2071 1.79289C10.0196 1.60536 9.76522 1.5 9.5 1.5H6.5C6.23478 1.5 5.98043 1.60536 5.79289 1.79289C5.60536 1.98043 5.5 2.23478 5.5 2.5V3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_529_4122"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>`;
 const ICON_SIGNOUT = `<svg width="16" height="16" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_529_4505)"><path d="M7.4375 2.65625H3.1875V14.3438H7.4375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.4375 8.5H14.875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.2188 5.84375L14.875 8.5L12.2188 11.1562" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_529_4505"><rect width="17" height="17" fill="white"/></clipPath></defs></svg>`;
@@ -246,17 +248,26 @@ function onHomeScroll(el) {
 
 function openAddMember() {
   showModal(`<div class="modal-sheet">
-    <div style="padding:20px">
-      <div class="modal-title">Add Member</div>
-      <div style="margin-top:14px">
-        <div class="form-field"><label class="form-label">First Name</label>
-          <input class="form-input" id="add-fn" placeholder="e.g. Abhishek" onkeydown="if(event.key==='Enter')document.getElementById('add-ln').focus()"/>
-        </div>
-        <div class="form-field"><label class="form-label">Last Name</label>
-          <input class="form-input" id="add-ln" placeholder="e.g. Jhawar" onkeydown="if(event.key==='Enter')confirmAdd()"/>
-        </div>
+    <div class="modal-sheet-header" id="filter-sticky-top">
+      <div class="filter-drawer-header">
+        <div class="filter-drawer-spacer"></div>
+        <div class="filter-drawer-title">Add Member</div>
+        <button class="filter-drawer-close" onclick="closeModal()">${xIcon()}</button>
       </div>
-      <div class="modal-btns"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="confirmAdd()">Add</button></div>
+    </div>
+    <div class="modal-sheet-body" style="padding:16px 20px;display:flex;flex-direction:column;gap:20px;">
+      <div class="form-field">
+        <label class="form-label">First Name</label>
+        <input class="form-input" id="add-fn" placeholder="e.g. Abhishek" onkeydown="if(event.key==='Enter')document.getElementById('add-ln').focus()"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" id="add-ln" placeholder="e.g. Jhawar" onkeydown="if(event.key==='Enter')confirmAdd()"/>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="action-btn cancel" onclick="closeModal()">${ICON_X} Cancel</button>
+      <button class="action-btn save" onclick="confirmAdd()">${ICON_PLUS} Add</button>
     </div>
   </div>`);
   setTimeout(()=>document.getElementById('add-fn')?.focus(),100);
@@ -278,17 +289,26 @@ async function confirmAdd() {
 function openEditMember(id) {
   const m=members.find(x=>x.id===id); if(!m)return;
   showModal(`<div class="modal-sheet">
-    <div style="padding:20px">
-      <div class="modal-title">Edit Member</div>
-      <div style="margin-top:14px">
-        <div class="form-field"><label class="form-label">First Name</label>
-          <input class="form-input" id="edit-fn" value="${esc(m.first_name)}" onkeydown="if(event.key==='Enter')document.getElementById('edit-ln').focus()"/>
-        </div>
-        <div class="form-field"><label class="form-label">Last Name</label>
-          <input class="form-input" id="edit-ln" value="${esc(m.last_name)}" onkeydown="if(event.key==='Enter')confirmEdit('${id}')"/>
-        </div>
+    <div class="modal-sheet-header" id="filter-sticky-top">
+      <div class="filter-drawer-header">
+        <div class="filter-drawer-spacer"></div>
+        <div class="filter-drawer-title">Edit Member</div>
+        <button class="filter-drawer-close" onclick="closeModal()">${xIcon()}</button>
       </div>
-      <div class="modal-btns"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="confirmEdit('${id}')">Save</button></div>
+    </div>
+    <div class="modal-sheet-body" style="padding:16px 20px;display:flex;flex-direction:column;gap:20px;">
+      <div class="form-field">
+        <label class="form-label">First Name</label>
+        <input class="form-input" id="edit-fn" value="${esc(m.first_name)}" onkeydown="if(event.key==='Enter')document.getElementById('edit-ln').focus()"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Last Name</label>
+        <input class="form-input" id="edit-ln" value="${esc(m.last_name)}" onkeydown="if(event.key==='Enter')confirmEdit('${id}')"/>
+      </div>
+    </div>
+    <div class="action-bar">
+      <button class="action-btn cancel" onclick="closeModal()">${ICON_X} Cancel</button>
+      <button class="action-btn save" onclick="confirmEdit('${id}')">${ICON_CHECK} Save</button>
     </div>
   </div>`);
   setTimeout(()=>{const el=document.getElementById('edit-fn');if(el){el.focus();el.select();}},100);
