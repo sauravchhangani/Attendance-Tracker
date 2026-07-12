@@ -26,6 +26,8 @@
 /* Left-aligned variant (Records) — no leading spacer to offset it,
    text sits flush against the topbar's own padding. */
 .topbar-title.left{text-align:left;}
+/* Large page-title variant (Members) — bigger, bold, left-aligned. */
+.topbar-title.page{font-size:20px;font-weight:600;letter-spacing:0.06em;color:#212325;text-align:left;}
 /* Back button — bare icon, no background circle */
 .back-btn{
   width:18px;
@@ -49,7 +51,23 @@
   width:18px;
   flex-shrink:0;
 }
-.logout-btn{padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:none;font-family:var(--font);font-size:13px;color:var(--text2);cursor:pointer;}
+.logout-btn{
+  height:32px;
+  padding:6px 12px;
+  border-radius:8px;
+  border:none;
+  background:#F6F6F6;
+  font-family:var(--font);
+  font-size:14px;
+  font-weight:500;
+  color:#636363;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+.logout-btn svg{width:14px;height:14px;flex-shrink:0;}
 /* Delete button — Past Record screen trailing icon */
 .delete-btn{
   padding:8px;
