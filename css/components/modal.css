@@ -29,10 +29,26 @@
    just reads as a stray shadow, so drop it here. */
 .confirm-card .action-bar{box-shadow:none;}
 
-.form-field{margin-bottom:14px;}
-.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block;}
-.form-input{width:100%;height:42px;padding:0 12px;border:1.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);font-family:var(--font);font-size:15px;color:var(--text);outline:none;}
-.form-input:focus{border-color:var(--blue);}
+.form-field{display:flex;flex-direction:column;gap:10px;}
+.form-label{font-size:14px;font-weight:600;color:#626262;font-family:var(--font);}
+.form-input{
+  width:100%;
+  height:44px;
+  padding:12px 10px 12px 12px;
+  border:none;
+  border-radius:8px;
+  background:#ffffff;
+  font-family:var(--font);
+  font-size:16px;
+  font-weight:600;
+  color:#222526;
+  outline:1px #E9E9E9 solid;
+  outline-offset:-1px;
+  box-shadow:0px -1px 2px rgba(0,0,0,0.06) inset, 0px 2px 1px #ffffff inset, 0px 1px 3px rgba(0,0,0,0.02);
+  box-sizing:border-box;
+}
+.form-input::placeholder{color:#727272;font-weight:500;}
+.form-input:focus{outline:1px #B2B5B8 solid;outline-offset:-1px;}
 
 /* Filter drawer overrides */
 /* Remove default padding when drawer header manages its own layout */
