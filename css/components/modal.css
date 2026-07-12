@@ -28,6 +28,7 @@
    the screen content behind it — inside a floating confirm-card it
    just reads as a stray shadow, so drop it here. */
 .confirm-card .action-bar{box-shadow:none;}
+.modal-sheet .action-bar{box-shadow:none;border-top:1px solid #E7E7E8;}
 
 .form-field{display:flex;flex-direction:column;gap:10px;}
 .form-label{font-size:14px;font-weight:600;color:#626262;font-family:var(--font);}
