@@ -1,22 +1,31 @@
 /* ──────────────────────────────────────────────
    MEMBER ROW (Home screen list)
-   The "SR / Name / Edit / Delete" rows and their
-   column header.
+   Rows with a 3-dot menu (Edit/Delete), plus the
+   "Add another member" row above the list.
    ────────────────────────────────────────────── */
-.table-header{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
-.th{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;}
-.th-sr{width:36px;flex-shrink:0;}
-.th-name{flex:1;}
-.th-actions{width:80px;text-align:right;}
-
-.member-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.member-row{display:flex;align-items:center;justify-content:space-between;height:48px;padding:12px 16px;margin:0 -16px;border-bottom:1px solid #F5F5F5;box-sizing:border-box;}
 .member-row:last-child{border-bottom:none;}
-.sr-num{width:20px;font-size:13px;color:var(--text3);font-weight:500;text-align:center;flex-shrink:0;}
-.member-name-text{flex:1;font-size:15px;color:var(--text);}
+.member-row-main{display:flex;align-items:center;gap:8px;}
+.sr-num{width:24px;font-size:14px;color:#B3B3B3;font-weight:500;flex-shrink:0;}
+.member-name-text{font-size:14px;color:#252525;font-weight:500;}
 
-.icon-btn{width:32px;height:32px;border-radius:var(--radius-sm);border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
-.icon-btn.danger:active{background:var(--red-bg);color:var(--red);}
-.icon-btn svg{width:17px;height:17px;}
+.member-menu-btn{width:22px;height:22px;border-radius:50%;border:none;background:#F6F6F6;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
+.member-menu-btn svg{width:22px;height:22px;}
 
-.add-member-btn{display:flex;align-items:center;gap:8px;justify-content:flex-end;padding:0;border:none;background:none;cursor:pointer;color:var(--blue);font-family:var(--font);font-size:14px;font-weight:500;margin-bottom:14px;}
-.add-member-btn svg{width:18px;height:18px;}
+/* Popup menu — positioned via inline style at render time (anchored
+   to whichever row's menu button was tapped), this class is just
+   the visual shell. */
+.member-menu{position:fixed;width:114px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0px 1px 4px rgba(0,0,0,0.04),0px 2px 8px rgba(0,0,0,0.02);z-index:200;}
+.member-menu-item{height:40px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:16px;font-weight:500;cursor:pointer;border-bottom:1px solid #F5F5F5;}
+.member-menu-item:last-child{border-bottom:none;}
+.member-menu-item svg{width:14px;height:14px;flex-shrink:0;}
+.member-menu-item.edit{color:#252525;}
+.member-menu-item.delete{color:#F14135;}
+
+.add-member-row{display:flex;align-items:center;gap:10px;padding:16px;margin:0 -16px;border-bottom:1px solid #EBEBEB;cursor:pointer;color:#636363;font-family:var(--font);font-size:14px;font-weight:600;}
+.add-member-icon{width:36px;height:36px;padding:10px;box-sizing:border-box;background:#F6F6F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#616262;flex-shrink:0;}
+.add-member-icon svg{width:16px;height:16px;}
+
+/* Scroll shadow — same mechanism as #records-sticky-top, toggled by
+   onHomeScroll() in app.js. */
+#home-sticky-top.scrolled{box-shadow:0px 4px 8px rgba(0,0,0,0.05),0px 1px 2px rgba(0,0,0,0.02);}
