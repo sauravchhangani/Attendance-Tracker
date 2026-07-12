@@ -53,6 +53,7 @@ function _show(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   closeModal();
+  closeMemberMenu();
 }
 function setLoading(msg='Loading...') {
   document.getElementById('loading-text').textContent = msg;
@@ -193,20 +194,54 @@ function renderHomeMembers(filter='') {
   const q = filter.toLowerCase();
   const filtered = members.filter(m=>`${m.first_name} ${m.last_name}`.toLowerCase().includes(q));
   if(!filtered.length){
-    el.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">${members.length?'No results':'No members yet'}</div><div class="empty-sub">${members.length?'Try a different search.':'Tap "+ Add member" above.'}</div></div>`;
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">${members.length?'No results':'No members yet'}</div><div class="empty-sub">${members.length?'Try a different search.':'Tap "Add another member" above.'}</div></div>`;
     return;
   }
   el.innerHTML = filtered.map((m)=>`
     <div class="member-row">
-      <span class="sr-num">${members.indexOf(m)+1}</span>
-      <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
-      <button class="icon-btn" onclick="openEditMember('${m.id}')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-      </button>
-      <button class="icon-btn danger" onclick="deleteMember('${m.id}')">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
+      <div class="member-row-main">
+        <span class="sr-num">${members.indexOf(m)+1}</span>
+        <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+      </div>
+      <button class="member-menu-btn" onclick="openMemberMenu('${m.id}', this)">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 9.74902C11.691 9.74902 12.251 10.309 12.251 11C12.251 11.691 11.691 12.251 11 12.251C10.309 12.251 9.74902 11.691 9.74902 11C9.74902 10.309 10.309 9.74902 11 9.74902Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/><path d="M15.332 9.6803C16.0231 9.6803 16.583 10.2402 16.583 10.9313C16.583 11.6223 16.0231 12.1823 15.332 12.1823C14.641 12.1823 14.0811 11.6223 14.0811 10.9313C14.0811 10.2402 14.641 9.6803 15.332 9.6803Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/><path d="M6.53125 9.6803C7.2223 9.6803 7.78223 10.2402 7.78223 10.9313C7.78223 11.6223 7.2223 12.1823 6.53125 12.1823C5.8402 12.1823 5.28027 11.6223 5.28027 10.9313C5.28027 10.2402 5.8402 9.6803 6.53125 9.6803Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/></svg>
       </button>
     </div>`).join('');
+}
+
+/* ── Member row popup menu (Edit / Delete) — a lightweight anchored
+   popover, not a modal: no dimming, closes on outside tap. ── */
+function openMemberMenu(id, btn) {
+  closeMemberMenu();
+  const rect = btn.getBoundingClientRect();
+  const menu = document.createElement('div');
+  menu.className = 'member-menu';
+  menu.id = 'member-menu-popup';
+  menu.style.top = (rect.bottom + 6) + 'px';
+  menu.style.left = (rect.right - 114) + 'px';
+  menu.innerHTML = `
+    <div class="member-menu-item edit" onclick="closeMemberMenu();openEditMember('${id}')">
+      Edit
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2019_2500)"><path d="M9.48633 1.0058C9.75796 1.03281 10.0132 1.15296 10.208 1.3476L12.6523 3.78998L12.7314 3.87689C12.9045 4.08819 13 4.35429 13 4.62982C12.9999 4.94452 12.8748 5.24607 12.6523 5.46869L5.9082 12.2148C5.68568 12.4371 5.38386 12.5623 5.06934 12.5624H2.625C2.31006 12.5624 2.00786 12.4375 1.78516 12.2148C1.56248 11.9921 1.4375 11.6899 1.4375 11.3749V8.9306L1.44336 8.81342C1.47042 8.54195 1.59067 8.28643 1.78516 8.09174L8.5293 1.3476C8.75197 1.12507 9.05433 0.999939 9.36914 0.999939L9.48633 1.0058Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.4375 3.5L10.5 6.5625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2019_2500"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>
+    </div>
+    <div class="member-menu-item delete" onclick="closeMemberMenu();deleteMember('${id}')">
+      Delete
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2019_2506)"><path d="M13.5 3.5H2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5V10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 6.5V10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 3.5V13C12.5 13.1326 12.4473 13.2598 12.3536 13.3536C12.2598 13.4473 12.1326 13.5 12 13.5H4C3.86739 13.5 3.74021 13.4473 3.64645 13.3536C3.55268 13.2598 3.5 13.1326 3.5 13V3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5V2.5C10.5 2.23478 10.3946 1.98043 10.2071 1.79289C10.0196 1.60536 9.76522 1.5 9.5 1.5H6.5C6.23478 1.5 5.98043 1.60536 5.79289 1.79289C5.60536 1.98043 5.5 2.23478 5.5 2.5V3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2019_2506"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+    </div>`;
+  document.body.appendChild(menu);
+  const catcher = document.createElement('div');
+  catcher.id = 'member-menu-catcher';
+  catcher.style.cssText = 'position:fixed;inset:0;z-index:199;';
+  catcher.onclick = closeMemberMenu;
+  document.body.appendChild(catcher);
+}
+function closeMemberMenu() {
+  const m = document.getElementById('member-menu-popup'); if(m) m.remove();
+  const c = document.getElementById('member-menu-catcher'); if(c) c.remove();
+}
+function onHomeScroll(el) {
+  const top = document.getElementById('home-sticky-top');
+  if(top) top.classList.toggle('scrolled', el.scrollTop > 0);
 }
 
 function openAddMember() {
