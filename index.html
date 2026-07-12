@@ -74,36 +74,33 @@
   <!-- HOME -->
   <div class="screen" id="screen-home">
     <div class="topbar">
-      <div class="topbar-trail"></div>
-      <div class="topbar-title">BNI Attendance</div>
-      <button class="logout-btn" onclick="doLogout()">Sign out</button>
+      <div class="topbar-title page">Members</div>
+      <button class="logout-btn" onclick="doLogout()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2027_7468)"><path d="M6.125 2.1875H2.625V11.8125H6.125" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.125 7H12.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.0625 4.8125L12.25 7L10.0625 9.1875" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2027_7468"><rect width="14" height="14" fill="white"/></clipPath></defs></svg>
+        Sign Out
+      </button>
     </div>
     <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
       <!-- STICKY TOP -->
-      <div style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
+      <div id="home-sticky-top" style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
         <div class="search-wrap">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input class="search-input" id="home-search" placeholder="Search contacts" oninput="renderHomeMembers(this.value)"/>
+          <input class="search-input" id="home-search" placeholder="Search members" oninput="renderHomeMembers(this.value)"/>
         </div>
-        <button class="add-member-btn" onclick="openAddMember()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
-          Add member
-        </button>
-        <div class="section-label">All Members</div>
-        <div class="table-header">
-          <span class="th th-sr">SR.</span>
-          <span class="th th-name">NAMES</span>
-          <span class="th th-actions">EDIT&nbsp;&nbsp;DELETE</span>
+        <div class="add-member-row" onclick="openAddMember()">
+          <span class="add-member-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2019_1825)"><path d="M2.5 8H13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2.5V13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2019_1825"><rect width="16" height="16" fill="white"/></clipPath></defs></svg></span>
+          Add another member
         </div>
+        <div class="list-section-header">All Members</div>
       </div>
       <!-- SCROLLABLE LIST -->
-      <div style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;">
+      <div id="home-scroll" style="flex:1;overflow-y:auto;padding:0 16px 16px;-webkit-overflow-scrolling:touch;" onscroll="onHomeScroll(this)">
         <div id="home-members-list"></div>
       </div>
     </div>
-    <button class="fab-take" onclick="startAttendance()">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-      Take attendance
+    <button class="action-btn save fab-take" onclick="startAttendance()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_2167_2669)"><path d="M2.5 8H13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 2.5V13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="clip0_2167_2669"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>
+      Take Attendance
     </button>
     <div class="bottom-nav">
       <button class="nav-item active" id="nav-h1" onclick="goHome()">
