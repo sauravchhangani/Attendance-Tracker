@@ -46,19 +46,18 @@
   <!-- LOGIN -->
   <div class="screen active" id="screen-login">
     <div class="login-wrap">
-      <div class="login-logo">BNI<span>.</span></div>
-      <div class="login-sub">Edenite Chapter Attendance</div>
-      <div style="width:100%">
+      <div class="login-title">Sign In to Markd</div>
+      <div class="login-fields">
         <div class="form-field">
-          <label class="form-label">Email</label>
-          <input class="form-input" id="login-email" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
+          <label class="form-label">Email ID</label>
+          <input class="form-input" id="login-email" type="email" placeholder="Enter your email id" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()"/>
         </div>
         <div class="form-field">
           <label class="form-label">Password</label>
-          <input class="form-input" id="login-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <input class="form-input" id="login-pass" type="password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"/>
         </div>
         <div id="login-error" class="login-error"></div>
-        <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+        <button class="btn btn-primary login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
       </div>
     </div>
   </div>
@@ -161,7 +160,7 @@
   <!-- RECORDS -->
   <div class="screen" id="screen-records">
     <div class="topbar">
-      <div class="topbar-title page">Records</div>
+      <div class="topbar-title left">Records</div>
     </div>
     <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
       <div id="records-sticky-top" style="padding:16px 16px 0;background:var(--bg);flex-shrink:0;">
