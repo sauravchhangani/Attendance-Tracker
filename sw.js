@@ -1,4 +1,4 @@
-const CACHE = 'bni-att-v4';
+const CACHE = 'bni-att-v5';
 const BASE = '/Attendance-Tracker';
 
 self.addEventListener('install', e => {
