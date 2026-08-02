@@ -668,31 +668,28 @@ async function downloadPDF() {
   const counts = getCounts(ms);
   const filename = `Markd-Attendance-${date.replace(/\//g,'-')}.pdf`;
 
-  // ── PALS pill HTML builder (matches app CSS exactly)
+  // ── PALS pill HTML builder — matches app pill CSS exactly, no external fonts needed
   const palsPill = (status) => {
     const slots = ['P','A','L','S'];
     const colors = {
-      P:{bg:'#83D1A2',border:'#59AB7C',text:'#025A28',glow:'0px 0px 2px 3px rgba(255,255,255,0.25) inset,0px 0px 1px 2px rgba(255,255,255,0.20) inset'},
-      A:{bg:'#F08A64',border:'#E0774E',text:'#6E2001',glow:'0px 0px 2px 3px rgba(255,255,255,0.20) inset,0px 0px 1px 2px rgba(255,255,255,0.20) inset'},
-      L:{bg:'#61A1F3',border:'#2C73D8',text:'#023379',glow:'0px 0px 2px 3px rgba(255,255,255,0.20) inset,0px 0px 1px 2px rgba(255,255,255,0.20) inset'},
-      S:{bg:'#FBDA83',border:'#E1AA00',text:'#765901',glow:'0px 0px 2px 3px rgba(255,255,255,0.40) inset,0px 0px 1px 2px rgba(255,255,255,0.40) inset'}
+      P:{bg:'#83D1A2',border:'#59AB7C',text:'#025A28',glow:'0 0 2px 3px rgba(255,255,255,0.25) inset,0 0 1px 2px rgba(255,255,255,0.20) inset'},
+      A:{bg:'#F08A64',border:'#E0774E',text:'#6E2001',glow:'0 0 2px 3px rgba(255,255,255,0.20) inset,0 0 1px 2px rgba(255,255,255,0.20) inset'},
+      L:{bg:'#61A1F3',border:'#2C73D8',text:'#023379',glow:'0 0 2px 3px rgba(255,255,255,0.20) inset,0 0 1px 2px rgba(255,255,255,0.20) inset'},
+      S:{bg:'#FBDA83',border:'#E1AA00',text:'#765901',glow:'0 0 2px 3px rgba(255,255,255,0.40) inset,0 0 1px 2px rgba(255,255,255,0.40) inset'}
     };
     const btns = slots.map((s, i) => {
       const isActive = s === status;
-      const isFirst = i === 0;
       const nextActive = slots[i+1] === status;
       const prevActive = slots[i-1] === status;
-      let style = 'width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-family:Inter,Arial,sans-serif;position:relative;';
       if (isActive) {
         const c = colors[s];
-        const ml = isFirst ? 'margin-left:-1px;width:29px;' : '';
-        style += `${ml}background:${c.bg};color:${c.text};font-weight:700;border-radius:8px;z-index:2;border:none;outline:1.25px ${c.border} solid;outline-offset:-1.25px;box-shadow:${c.glow};`;
+        const ml = i === 0 ? 'margin-left:-1px;width:29px;' : 'width:28px;';
+        return `<span style="${ml}height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-family:Arial,sans-serif;font-weight:700;background:${c.bg};color:${c.text};border-radius:7px;border:none;outline:1.25px ${c.border} solid;outline-offset:-1.25px;box-shadow:${c.glow};position:relative;z-index:2;">${s}</span>`;
       } else {
-        const noRightBorder = nextActive || prevActive;
-        style += `background:transparent;color:#8B8E8D;font-weight:400;border:none;z-index:1;`;
-        if (!noRightBorder && i < 3) style += 'border-right:1px solid #E3E3E3;';
+        const noRight = nextActive || prevActive;
+        const rb = (!noRight && i < 3) ? 'border-right:1px solid #E3E3E3;' : '';
+        return `<span style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-family:Arial,sans-serif;font-weight:400;background:transparent;color:#8B8E8D;${rb}position:relative;z-index:1;">${s}</span>`;
       }
-      return `<span style="${style}">${s}</span>`;
     }).join('');
     return `<span style="display:inline-flex;align-items:center;width:112px;height:28px;border:1px solid #E3E3E3;border-radius:8px;background:#F6F6F6;overflow:visible;flex-shrink:0;position:relative;">${btns}</span>`;
   };
@@ -701,43 +698,42 @@ async function downloadPDF() {
   const buildRows = (arr, startIdx) => arr.map((m,i) => `
     <div style="display:flex;align-items:center;height:42px;border-bottom:1px solid #F5F5F5;gap:6px;">
       <span style="width:22px;font-size:11px;color:#B3B3B3;font-weight:500;flex-shrink:0;">${startIdx+i+1}</span>
-      <span style="flex:1;font-size:12px;color:#252525;font-weight:500;padding-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.name}</span>
+      <span style="flex:1;font-size:12px;color:#252525;font-weight:500;padding-left:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.name}</span>
       ${palsPill(m.status)}
     </div>`).join('');
 
   // ── Column header
-  const colHeader = `<div style="display:flex;align-items:center;padding:7px 0;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;">
-    <span style="width:22px;flex-shrink:0;font-size:11px;font-weight:500;color:#767676;">Sr.</span>
-    <span style="flex:1;padding-left:6px;font-size:11px;font-weight:500;color:#767676;">Name</span>
-    <span style="width:112px;font-size:11px;font-weight:500;color:#767676;">Status</span>
+  const colHeader = `<div style="display:flex;align-items:center;padding:7px 0;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;margin-bottom:0;">
+    <span style="width:22px;flex-shrink:0;font-size:11px;font-weight:600;color:#767676;font-family:Arial,sans-serif;">Sr.</span>
+    <span style="flex:1;padding-left:6px;font-size:11px;font-weight:600;color:#767676;font-family:Arial,sans-serif;">Name</span>
+    <span style="width:112px;font-size:11px;font-weight:600;color:#767676;font-family:Arial,sans-serif;">Status</span>
   </div>`;
 
-  // ── Stat cards
-  const statCards = `
-    <div style="display:flex;gap:8px;margin-bottom:18px;">
-      <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;outline:1px solid #E9E9E9;outline-offset:-1px;">
-        <div style="font-size:16px;font-weight:700;color:#025A28;line-height:1;margin-bottom:3px;">${counts.P}</div>
-        <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;">Present</div>
-      </div>
-      <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;outline:1px solid #E9E9E9;outline-offset:-1px;">
-        <div style="font-size:16px;font-weight:700;color:#6E2001;line-height:1;margin-bottom:3px;">${counts.A}</div>
-        <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;">Absent</div>
-      </div>
-      <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;outline:1px solid #E9E9E9;outline-offset:-1px;">
-        <div style="font-size:16px;font-weight:700;color:#023379;line-height:1;margin-bottom:3px;">${counts.L}</div>
-        <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;">Late</div>
-      </div>
-      <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;outline:1px solid #E9E9E9;outline-offset:-1px;">
-        <div style="font-size:16px;font-weight:700;color:#765901;line-height:1;margin-bottom:3px;">${counts.S}</div>
-        <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;">Substitute</div>
-      </div>
-      <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;outline:1px solid #E9E9E9;outline-offset:-1px;">
-        <div style="font-size:16px;font-weight:700;color:#212325;line-height:1;margin-bottom:3px;">${ms.length}</div>
-        <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;">Total</div>
-      </div>
-    </div>`;
+  // ── Stat cards (no Unmarked)
+  const statCards = `<div style="display:flex;gap:8px;margin-bottom:18px;">
+    <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;border:1px solid #E9E9E9;">
+      <div style="font-size:16px;font-weight:700;color:#025A28;line-height:1;margin-bottom:3px;">${counts.P}</div>
+      <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-family:Arial,sans-serif;">Present</div>
+    </div>
+    <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;border:1px solid #E9E9E9;">
+      <div style="font-size:16px;font-weight:700;color:#6E2001;line-height:1;margin-bottom:3px;">${counts.A}</div>
+      <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-family:Arial,sans-serif;">Absent</div>
+    </div>
+    <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;border:1px solid #E9E9E9;">
+      <div style="font-size:16px;font-weight:700;color:#023379;line-height:1;margin-bottom:3px;">${counts.L}</div>
+      <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-family:Arial,sans-serif;">Late</div>
+    </div>
+    <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;border:1px solid #E9E9E9;">
+      <div style="font-size:16px;font-weight:700;color:#765901;line-height:1;margin-bottom:3px;">${counts.S}</div>
+      <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-family:Arial,sans-serif;">Substitute</div>
+    </div>
+    <div style="flex:1;background:#F7F7F7;border-radius:7px;padding:9px 10px;border:1px solid #E9E9E9;">
+      <div style="font-size:16px;font-weight:700;color:#212325;line-height:1;margin-bottom:3px;">${ms.length}</div>
+      <div style="font-size:8px;color:#787575;text-transform:uppercase;letter-spacing:0.07em;font-weight:600;font-family:Arial,sans-serif;">Total</div>
+    </div>
+  </div>`;
 
-  // ── Pagination: 40 members per page (20 per column)
+  // ── Page builder: 40 members per page (20 per column), fixed 794x1123 height
   const ROWS_PER_PAGE = 40;
   const totalPages = Math.ceil(ms.length / ROWS_PER_PAGE);
 
@@ -746,103 +742,78 @@ async function downloadPDF() {
     const leftMs = pageMs.slice(0, half);
     const rightMs = pageMs.slice(half);
     const isFirst = pageNum === 1;
-    return `
-<div style="background:#fff;width:794px;padding:44px 44px 36px;box-sizing:border-box;${isFirst ? '' : 'padding-top:40px;'}">
-  ${isFirst ? `
-  <div style="padding-bottom:16px;border-bottom:1px solid #E7E7E8;margin-bottom:18px;">
-    <div style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#B3B3B3;margin-bottom:5px;">Markd</div>
-    <div style="font-size:22px;font-weight:700;color:#212325;letter-spacing:0.03em;">Attendance Record</div>
-    <div style="font-size:12px;color:#606264;margin-top:4px;font-weight:500;">${dayName}, ${date.replace(/\//g,' / ')}</div>
-  </div>
-  ${statCards}` : `
-  <div style="padding-bottom:12px;border-bottom:1px solid #E7E7E8;margin-bottom:16px;display:flex;justify-content:space-between;align-items:baseline;">
-    <div style="font-size:13px;font-weight:700;color:#212325;">Attendance Record <span style="font-size:11px;color:#B3B3B3;font-weight:500;">continued</span></div>
-    <div style="font-size:11px;color:#B3B3B3;font-weight:500;">${dayName}, ${date.replace(/\//g,' / ')}</div>
-  </div>`}
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;">
-    <div>${colHeader}${buildRows(leftMs, pageOffset)}</div>
-    <div>${colHeader}${buildRows(rightMs, pageOffset + half)}</div>
-  </div>
-  <div style="margin-top:18px;padding-top:10px;border-top:1px solid #E7E7E8;display:flex;justify-content:space-between;font-size:8px;color:#B3B3B3;font-weight:500;letter-spacing:0.04em;">
-    <span>Markd &bull; Attendance Record &bull; ${date}</span>
-    <span>Page ${pageNum} of ${totalPages}</span>
-  </div>
-</div>`;
+    const header = isFirst
+      ? `<div style="padding-bottom:16px;border-bottom:1px solid #E7E7E8;margin-bottom:18px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#B3B3B3;margin-bottom:5px;font-family:Arial,sans-serif;">Markd</div>
+          <div style="font-size:22px;font-weight:700;color:#212325;letter-spacing:0.02em;font-family:Arial,sans-serif;">Attendance Record</div>
+          <div style="font-size:12px;color:#606264;margin-top:4px;font-weight:500;font-family:Arial,sans-serif;">${dayName}, ${date.replace(/\//g,' / ')}</div>
+        </div>${statCards}`
+      : `<div style="padding-bottom:12px;border-bottom:1px solid #E7E7E8;margin-bottom:16px;display:flex;justify-content:space-between;align-items:baseline;">
+          <div style="font-size:13px;font-weight:700;color:#212325;font-family:Arial,sans-serif;">Attendance Record <span style="font-size:11px;color:#B3B3B3;font-weight:400;">continued</span></div>
+          <div style="font-size:11px;color:#B3B3B3;font-family:Arial,sans-serif;">${dayName}, ${date.replace(/\//g,' / ')}</div>
+        </div>`;
+    return `<div style="padding:44px 44px 36px;width:794px;height:1123px;box-sizing:border-box;background:#fff;overflow:hidden;">
+      ${header}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;">
+        <div>${colHeader}${buildRows(leftMs, pageOffset)}</div>
+        <div>${colHeader}${buildRows(rightMs, pageOffset + half)}</div>
+      </div>
+      <div style="position:absolute;bottom:36px;left:44px;right:44px;padding-top:10px;border-top:1px solid #E7E7E8;display:flex;justify-content:space-between;font-size:8px;color:#B3B3B3;font-weight:500;letter-spacing:0.04em;font-family:Arial,sans-serif;">
+        <span>Markd &bull; Attendance Record &bull; ${date}</span>
+        <span>Page ${pageNum} of ${totalPages}</span>
+      </div>
+    </div>`;
   };
-
-  // Build all pages
-  let allPages = '';
-  for (let p = 0; p < totalPages; p++) {
-    const pageMs = ms.slice(p * ROWS_PER_PAGE, (p + 1) * ROWS_PER_PAGE);
-    allPages += buildPage(pageMs, p + 1, p * ROWS_PER_PAGE);
-  }
-
-  const htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8"/>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',Arial,sans-serif;background:#fff;width:794px;}
-</style>
-</head>
-<body>${allPages}</body>
-</html>`;
 
   showToast('Generating PDF...');
 
-  // Render in hidden iframe, capture each page with html2canvas -> jsPDF
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:794px;height:' + (1123 * totalPages) + 'px;border:none;';
-  document.body.appendChild(iframe);
-  iframe.contentDocument.open();
-  iframe.contentDocument.write(htmlContent);
-  iframe.contentDocument.close();
-
-  await new Promise(r => setTimeout(r, 1000));
+  // Each page rendered in its own fixed 794x1123 iframe — prevents stretching
+  const renderPage = (pageHtml) => new Promise((resolve, reject) => {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:794px;height:1123px;border:none;';
+    document.body.appendChild(iframe);
+    const doc = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,Helvetica,sans-serif;background:#fff;width:794px;height:1123px;overflow:hidden;position:relative;}</style>
+</head><body>${pageHtml}</body></html>`;
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(doc);
+    iframe.contentDocument.close();
+    setTimeout(async () => {
+      try {
+        const canvas = await html2canvas(iframe.contentDocument.body, {
+          scale:2, useCORS:true, backgroundColor:'#ffffff',
+          width:794, height:1123, windowWidth:794, windowHeight:1123
+        });
+        document.body.removeChild(iframe);
+        resolve(canvas);
+      } catch(e) { document.body.removeChild(iframe); reject(e); }
+    }, 700);
+  });
 
   try {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
 
     for (let p = 0; p < totalPages; p++) {
-      const pageEl = iframe.contentDocument.body.children[p];
-      const canvas = await html2canvas(pageEl, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        width: 794,
-        windowWidth: 794
-      });
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pageMs = ms.slice(p * ROWS_PER_PAGE, (p+1) * ROWS_PER_PAGE);
+      const canvas = await renderPage(buildPage(pageMs, p+1, p * ROWS_PER_PAGE));
       if (p > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, pdfW, pdfH);
     }
 
-    document.body.removeChild(iframe);
-    const pdfBlob = pdf.output('blob');
-    const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
-
-    if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      await navigator.share({
-        title: `Markd Attendance - ${date}`,
-        text: `Markd Attendance Record - ${dayName}, ${date}`,
-        files: [pdfFile]
-      });
+    const pdfFile = new File([pdf.output('blob')], filename, { type:'application/pdf' });
+    if (navigator.share && navigator.canShare && navigator.canShare({ files:[pdfFile] })) {
+      await navigator.share({ title:`Markd Attendance - ${date}`, text:`Markd Attendance Record - ${dayName}, ${date}`, files:[pdfFile] });
       showToast('Shared successfully ✓');
     } else {
       const url = URL.createObjectURL(pdfFile);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
+      const a = document.createElement('a'); a.href=url; a.download=filename; a.click();
       URL.revokeObjectURL(url);
       showToast('PDF downloaded ✓');
     }
   } catch(e) {
-    document.body.removeChild(iframe);
     console.error('PDF error:', e);
     showToast('Error generating PDF');
   }
