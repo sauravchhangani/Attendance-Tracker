@@ -1,7 +1,7 @@
 /* ─── SUPABASE ─────────────────────────────── */
 const SUPA_URL = 'https://lcsscdpaffiorizgovfu.supabase.co';
 const SUPA_KEY = 'sb_publishable_VQ8kWeHxvk2KseqO3_5wFw_EA3Xcl5M';
-const sb = supabase.createClient(https://lcsscdpaffiorizgovfu.supabase.co, sb_publishable_VQ8kWeHxvk2KseqO3_5wFw_EA3Xcl5M);
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 /* ─── STATE ────────────────────────────────── */
 let members = [];
