@@ -668,30 +668,63 @@ async function downloadPDF() {
   const counts = getCounts(ms);
   const filename = `Markd-Attendance-${date.replace(/\//g,'-')}.pdf`;
 
-  // ── PALS pill HTML builder — matches app pill CSS exactly, no external fonts needed
+  // ── PALS pill as inline SVG — renders perfectly in html2canvas
+  // including borders, gradients (inset glow simulation), and text
   const palsPill = (status) => {
+    const W = 112, H = 28, R = 8, SW = 28; // pill width, height, radius, slot width
     const slots = ['P','A','L','S'];
     const colors = {
-      P:{bg:'#83D1A2',border:'#59AB7C',text:'#025A28'},
-      A:{bg:'#F08A64',border:'#E0774E',text:'#6E2001'},
-      L:{bg:'#61A1F3',border:'#2C73D8',text:'#023379'},
-      S:{bg:'#FBDA83',border:'#E1AA00',text:'#765901'}
+      P:{bg1:'#9DDBB8',bg2:'#83D1A2',border:'#59AB7C',text:'#025A28'},
+      A:{bg1:'#F4A07A',bg2:'#F08A64',border:'#E0774E',text:'#6E2001'},
+      L:{bg1:'#7BB8F7',bg2:'#61A1F3',border:'#2C73D8',text:'#023379'},
+      S:{bg1:'#FDDE96',bg2:'#FBDA83',border:'#E1AA00',text:'#765901'}
     };
-    const btns = slots.map((s, i) => {
-      const isActive = s === status;
-      const nextActive = slots[i+1] === status;
-      const prevActive = slots[i-1] === status;
+    const activeIdx = slots.indexOf(status);
+
+    // Build gradient defs for each active color
+    const defs = slots.map(s => {
+      const c = colors[s];
+      return `<linearGradient id="g${s}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${c.bg1}"/>
+        <stop offset="100%" stop-color="${c.bg2}"/>
+      </linearGradient>`;
+    }).join('');
+
+    // Pill background + outer border
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" style="flex-shrink:0;display:inline-block;vertical-align:middle;">
+  <defs>${defs}</defs>
+  <rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="${R}" ry="${R}" fill="#F6F6F6" stroke="#E3E3E3" stroke-width="1"/>`;
+
+    // Slots
+    slots.forEach((s, i) => {
+      const x = i * SW;
+      const isActive = i === activeIdx;
+      const isFirst = i === 0;
+      const isLast = i === 3;
+      const prevActive = i - 1 === activeIdx;
+      const nextActive = i + 1 === activeIdx;
+
       if (isActive) {
         const c = colors[s];
-        const ml = i === 0 ? 'margin-left:-1px;width:29px;' : 'width:28px;';
-        return `<span style="${ml}height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-family:Arial,sans-serif;font-weight:700;background:${c.bg};color:${c.text};border-radius:7px;border:1.5px solid ${c.border};position:relative;z-index:2;">${s}</span>`;
+        // Active button: full rounded rect with gradient fill + border
+        const ax = isFirst ? 0 : x;
+        const aw = isFirst ? SW + 1 : SW;
+        svg += `<rect x="${ax + 0.75}" y="0.75" width="${aw - 1.5}" height="${H - 1.5}" rx="${R}" ry="${R}" fill="url(#g${s})" stroke="${c.border}" stroke-width="1.5"/>`;
+        // Text
+        svg += `<text x="${ax + aw/2}" y="${H/2 + 4}" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="700" fill="${c.text}">${s}</text>`;
       } else {
-        const noRight = nextActive || prevActive;
-        const rb = (!noRight && i < 3) ? 'border-right:1px solid #E3E3E3;' : '';
-        return `<span style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-family:Arial,sans-serif;font-weight:400;background:transparent;color:#8B8E8D;${rb}position:relative;z-index:1;">${s}</span>`;
+        // Divider line — skip if adjacent to active
+        const showDivider = !isLast && !isActive && !(nextActive) && !(i === activeIdx - 1);
+        if (showDivider) {
+          svg += `<line x1="${x + SW}" y1="5" x2="${x + SW}" y2="${H-5}" stroke="#E3E3E3" stroke-width="1"/>`;
+        }
+        // Inactive text
+        svg += `<text x="${x + SW/2}" y="${H/2 + 4}" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="400" fill="#8B8E8D">${s}</text>`;
       }
-    }).join('');
-    return `<span style="display:inline-flex;align-items:center;width:112px;height:28px;border:1px solid #E3E3E3;border-radius:8px;background:#F6F6F6;overflow:visible;flex-shrink:0;position:relative;">${btns}</span>`;
+    });
+
+    svg += `</svg>`;
+    return svg;
   };
 
   // ── Row builder
@@ -733,7 +766,6 @@ async function downloadPDF() {
     </div>
   </div>`;
 
-  // ── Page builder: 40 members per page (20 per column), fixed 794x1123 height
   const ROWS_PER_PAGE = 40;
   const totalPages = Math.ceil(ms.length / ROWS_PER_PAGE);
 
@@ -752,7 +784,7 @@ async function downloadPDF() {
           <div style="font-size:13px;font-weight:700;color:#212325;font-family:Arial,sans-serif;">Attendance Record <span style="font-size:11px;color:#B3B3B3;font-weight:400;">continued</span></div>
           <div style="font-size:11px;color:#B3B3B3;font-family:Arial,sans-serif;">${dayName}, ${date.replace(/\//g,' / ')}</div>
         </div>`;
-    return `<div style="padding:44px 44px 36px;width:794px;height:1123px;box-sizing:border-box;background:#fff;overflow:hidden;">
+    return `<div style="padding:44px 44px 36px;width:794px;height:1123px;box-sizing:border-box;background:#fff;overflow:hidden;position:relative;">
       ${header}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px;">
         <div>${colHeader}${buildRows(leftMs, pageOffset)}</div>
@@ -767,7 +799,6 @@ async function downloadPDF() {
 
   showToast('Generating PDF...');
 
-  // Each page rendered in its own fixed 794x1123 iframe — prevents stretching
   const renderPage = (pageHtml) => new Promise((resolve, reject) => {
     const iframe = document.createElement('iframe');
     iframe.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:794px;height:1123px;border:none;';
