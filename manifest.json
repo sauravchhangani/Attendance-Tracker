@@ -1,6 +1,6 @@
 {
-  "name": "BNI Attendance",
-  "short_name": "BNI Att.",
+  "name": "Markd",
+  "short_name": "Markd",
   "description": "BNI Edenite chapter attendance tracker",
   "start_url": "https://sauravchhangani.github.io/Markd/",
   "scope": "https://sauravchhangani.github.io/Markd/",
@@ -16,13 +16,13 @@
       "purpose": "any maskable"
     },
     {
-      "src": "https://sauravchhangani.github.io/Attendance-Tracker/icons/icon-512.png",
+      "src": "https://sauravchhangani.github.io/Markd/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://sauravchhangani.github.io/Attendance-Tracker/icons/apple-touch-icon.png",
+      "src": "https://sauravchhangani.github.io/Markd/icons/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png"
     }
