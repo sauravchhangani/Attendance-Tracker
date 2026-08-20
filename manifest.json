@@ -1,7 +1,7 @@
 {
   "name": "Markd",
   "short_name": "Markd",
-  "description": "BNI Edenite chapter attendance tracker",
+  "description": "Markd attendance tracker",
   "start_url": "https://sauravchhangani.github.io/Markd/",
   "scope": "https://sauravchhangani.github.io/Markd/",
   "display": "standalone",
