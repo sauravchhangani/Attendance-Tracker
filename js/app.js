@@ -189,6 +189,20 @@ async function initApp() {
   memberStats = statsResult.data||[];
   _membersCached = true;
   _recordsCached = true;
+
+  // One-time self-heal: if member_stats is empty but saved attendance
+  // already exists (e.g. recorded before this feature was added), backfill
+  // stats for every member now instead of leaving sliders permanently blank.
+  const hasSavedRecords = records.some(r=>r.status==='saved');
+  if(memberStats.length===0 && hasSavedRecords && members.length){
+    setLoading('Setting up attendance stats...');
+    try{
+      await _refreshMemberStats(members.map(m=>m.id));
+    }catch(e){
+      console.error('Stats backfill failed:', e);
+    }
+  }
+
   goHome();
 }
 
@@ -281,7 +295,7 @@ async function openMemberProfile(memberId) {
 
   await loadMemberAttendance(memberId);
   renderMemberCalendar(memberId, new Date().getFullYear(), new Date().getMonth());
-  showScreen('screen-member-profile');
+  _show('screen-member-profile');
 }
 
 async function loadMemberAttendance(memberId) {
