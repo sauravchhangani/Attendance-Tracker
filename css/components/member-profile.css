@@ -84,6 +84,24 @@
   font-family:var(--font);
 }
 
+/* ── Status square (shared: calendar cells + trend pills) ── */
+.status-sq{
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:700;
+  font-family:var(--font);
+  flex-shrink:0;
+}
+.status-sq--P{background:var(--pals-P-bg);outline:1.25px var(--pals-P-border) solid;outline-offset:-1.25px;color:var(--pals-P-text);box-shadow:var(--pals-P-glow);}
+.status-sq--A{background:var(--pals-A-bg);outline:1.25px var(--pals-A-border) solid;outline-offset:-1.25px;color:var(--pals-A-text);box-shadow:var(--pals-A-glow);}
+.status-sq--L{background:var(--pals-L-bg);outline:1.25px var(--pals-L-border) solid;outline-offset:-1.25px;color:var(--pals-L-text);box-shadow:var(--pals-L-glow);}
+.status-sq--S{background:var(--pals-S-bg);outline:1.25px var(--pals-S-border) solid;outline-offset:-1.25px;color:var(--pals-S-text);box-shadow:var(--pals-S-glow);}
+
 /* ── Calendar */
 .cal-nav{
   display:flex;
@@ -108,6 +126,11 @@
   justify-content:center;
   cursor:pointer;
 }
+.cal-nav-btn[disabled]{
+  opacity:0.35;
+  cursor:default;
+  pointer-events:none;
+}
 .cal-grid{
   display:grid;
   grid-template-columns:repeat(7,1fr);
@@ -122,7 +145,9 @@
   padding:4px 0;
 }
 .cal-cell{
-  aspect-ratio:1;
+  width:32px;
+  height:32px;
+  margin:0 auto;
   display:flex;
   align-items:center;
   justify-content:center;
