@@ -277,15 +277,10 @@ async function openMemberProfile(memberId) {
   if(!Array.isArray(last7)) last7 = [];
   const trendEl = document.getElementById('mp-trend');
   if(last7.length === 7) {
-    const pc = {
-      P:{bg:'#83D1A2',bd:'#59AB7C',tx:'#025A28'},
-      A:{bg:'#F08A64',bd:'#E0774E',tx:'#6E2001'},
-      L:{bg:'#61A1F3',bd:'#2C73D8',tx:'#023379'},
-      S:{bg:'#FBDA83',bd:'#E1AA00',tx:'#765901'}
-    };
     const pills = [...last7].reverse().map(s => {
-      const c = pc[s]||{bg:'#F6F6F6',bd:'#E3E3E3',tx:'#8B8E8D'};
-      return `<div style="width:40px;height:40px;border-radius:8px;background:${c.bg};border:1.5px solid ${c.bd};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:${c.tx};font-family:var(--font);">${s}</div>`;
+      const cls = ['P','A','L','S'].includes(s) ? `status-sq status-sq--${s}` : 'status-sq';
+      const style = ['P','A','L','S'].includes(s) ? '' : 'style="background:#F6F6F6;color:#8B8E8D;"';
+      return `<div class="${cls}" ${style}>${s}</div>`;
     }).join('');
     trendEl.innerHTML = `<div class="mp-section">
       <div class="mp-section-title">Trend</div>
@@ -314,17 +309,22 @@ async function loadMemberAttendance(memberId) {
   return map;
 }
 
+function getMemberAttBounds(memberId) {
+  const cache = window._memberAttCache?.[memberId] || {};
+  const keys = Object.keys(cache).sort();
+  if(!keys.length) return null;
+  const first = keys[0], last = keys[keys.length-1];
+  const [minY,minM] = first.split('-').map(Number);
+  const [maxY,maxM] = last.split('-').map(Number);
+  return { minY, minM: minM-1, maxY, maxM: maxM-1 };
+}
+
 function renderMemberCalendar(memberId, year, month) {
   const calEl = document.getElementById('mp-calendar');
   const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   const dayHeaders = ['Su','Mo','Tu','We','Th','Fr','Sa'];
   const cache = window._memberAttCache?.[memberId] || {};
-  const pc = {
-    P:{bg:'#83D1A2',bd:'#59AB7C',tx:'#025A28'},
-    A:{bg:'#F08A64',bd:'#E0774E',tx:'#6E2001'},
-    L:{bg:'#61A1F3',bd:'#2C73D8',tx:'#023379'},
-    S:{bg:'#FBDA83',bd:'#E1AA00',tx:'#765901'}
-  };
+  const bounds = getMemberAttBounds(memberId);
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month+1, 0).getDate();
   const prevDays = new Date(year, month, 0).getDate();
@@ -334,9 +334,8 @@ function renderMemberCalendar(memberId, year, month) {
   for(let d = 1; d <= daysInMonth; d++) {
     const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const s = cache[ds];
-    if(s && pc[s]) {
-      const c = pc[s];
-      cells += `<div class="cal-cell" style="background:${c.bg};border:1.5px solid ${c.bd};color:${c.tx};font-weight:700;border-radius:8px;">${d}</div>`;
+    if(s && ['P','A','L','S'].includes(s)) {
+      cells += `<div class="status-sq status-sq--${s}">${d}</div>`;
     } else {
       cells += `<div class="cal-cell">${d}</div>`;
     }
@@ -345,14 +344,17 @@ function renderMemberCalendar(memberId, year, month) {
   for(let d = 1; d <= rem; d++)
     cells += `<div class="cal-cell cal-cell--other">${d}</div>`;
 
+  const atMin = bounds && (year < bounds.minY || (year === bounds.minY && month <= bounds.minM));
+  const atMax = bounds && (year > bounds.maxY || (year === bounds.maxY && month >= bounds.maxM));
+
   calEl.innerHTML = `<div class="mp-section">
     <div class="mp-section-title">Calendar View</div>
     <div class="cal-nav">
-      <button class="cal-nav-btn" onclick="shiftCalendar('${memberId}',${year},${month},-1)">
+      <button class="cal-nav-btn" ${atMin?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},-1)">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8.125 10.5625L4.0625 6.5L8.125 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <span class="cal-month-label">${monthNames[month]} ${year}</span>
-      <button class="cal-nav-btn" onclick="shiftCalendar('${memberId}',${year},${month},1)">
+      <button class="cal-nav-btn" ${atMax?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},1)">
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.875 10.5625L8.9375 6.5L4.875 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -364,9 +366,14 @@ function renderMemberCalendar(memberId, year, month) {
 }
 
 function shiftCalendar(memberId, year, month, dir) {
+  const bounds = getMemberAttBounds(memberId);
   let m = month + dir, y = year;
   if(m < 0){ m = 11; y--; }
   if(m > 11){ m = 0; y++; }
+  if(bounds){
+    if(y < bounds.minY || (y === bounds.minY && m < bounds.minM)) return;
+    if(y > bounds.maxY || (y === bounds.maxY && m > bounds.maxM)) return;
+  }
   renderMemberCalendar(memberId, y, m);
 }
 
@@ -385,10 +392,12 @@ async function openMemberStatDrawer(memberId, status, label) {
 
   const rows = (data||[]).map(a => {
     const dt = new Date(a.records.date);
-    return `<div style="display:flex;align-items:center;height:48px;padding:0 16px;border-bottom:1px solid #F5F5F5;justify-content:space-between;">
-      <span style="width:110px;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${fmtDate(a.records.date)}</span>
-      <span style="width:90px;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${dayNames[dt.getDay()]}</span>
-      <button onclick="closeModal();viewRecord('${a.records.id}')" style="width:28px;height:28px;background:#fff;border-radius:8px;border:none;outline:1px solid #E8E8E8;outline-offset:-1px;display:flex;align-items:center;justify-content:center;cursor:pointer;">${ARROW}</button>
+    return `<div style="display:flex;align-items:center;height:48px;padding:0 16px;border-bottom:1px solid #F5F5F5;">
+      <span style="width:110px;flex-shrink:0;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${fmtDate(a.records.date)}</span>
+      <span style="width:90px;flex-shrink:0;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${dayNames[dt.getDay()]}</span>
+      <span style="flex:1;display:flex;justify-content:flex-end;">
+        <button onclick="closeModal();viewRecord('${a.records.id}')" style="width:28px;height:28px;background:#fff;border-radius:8px;border:none;outline:1px solid #E8E8E8;outline-offset:-1px;display:flex;align-items:center;justify-content:center;cursor:pointer;">${ARROW}</button>
+      </span>
     </div>`;
   }).join('') || `<div style="padding:24px;text-align:center;color:#B3B3B3;font-size:14px;font-family:var(--font);">No records</div>`;
 
@@ -400,9 +409,9 @@ async function openMemberStatDrawer(memberId, status, label) {
         <button class="filter-drawer-close" onclick="closeModal()">${CLOSE}</button>
       </div>
       <div style="display:flex;align-items:center;padding:8px 16px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;">
-        <span style="width:110px;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Date</span>
-        <span style="width:90px;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Day</span>
-        <span style="font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">View</span>
+        <span style="width:110px;flex-shrink:0;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Date</span>
+        <span style="width:90px;flex-shrink:0;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Day</span>
+        <span style="flex:1;text-align:right;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">View</span>
       </div>
     </div>
     <div class="modal-sheet-body" style="padding:0;max-height:432px;overflow-y:auto;" onscroll="onFilterScroll(this)">${rows}</div>
@@ -588,6 +597,10 @@ function openDatePicker() {
 }
 function onAttScroll(el) {
   document.getElementById('att-sticky-top').classList.toggle('scrolled', el.scrollTop > 0);
+}
+function onMpScroll(el) {
+  const top = document.getElementById('mp-sticky-top');
+  if(top) top.classList.toggle('scrolled', el.scrollTop > 0);
 }
 function onPastScroll(el) {
   const top = document.getElementById('past-sticky-top');
