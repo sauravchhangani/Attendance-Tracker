@@ -233,20 +233,24 @@
       <div class="topbar-title">Member Profile</div>
       <button class="delete-btn" id="mp-delete-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13.5 3.5H2.5" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 6.5V10.5" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 6.5V10.5" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 3.5V13C12.5 13.1326 12.4473 13.2598 12.3536 13.3536C12.2598 13.4473 12.1326 13.5 12 13.5H4C3.86739 13.5 3.74021 13.4473 3.64645 13.3536C3.55268 13.2598 3.5 13.1326 3.5 13V3.5" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.5 3.5V2.5C10.5 2.23478 10.3946 1.98043 10.2071 1.79289C10.0196 1.60536 9.76522 1.5 9.5 1.5H6.5C6.23478 1.5 5.98043 1.60536 5.79289 1.79289C5.60536 1.98043 5.5 2.23478 5.5 2.5V3.5" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
-    <div class="body" style="-webkit-overflow-scrolling:touch;" id="mp-body">
-      <!-- Name + Edit -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <div id="mp-name" style="font-size:22px;font-weight:700;color:#212325;font-family:var(--font);"></div>
-        <button id="mp-edit-btn" class="action-btn cancel" style="flex:none;width:auto;padding:6px 14px;gap:6px;font-size:14px;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.06898 11.8126H2.625C2.50897 11.8126 2.39769 11.7665 2.31564 11.6844C2.23359 11.6024 2.1875 11.4911 2.1875 11.3751V8.93109C2.18755 8.81521 2.23358 8.70408 2.31547 8.6221L9.05953 1.87804C9.14157 1.79605 9.25281 1.75 9.36879 1.75C9.48477 1.75 9.59601 1.79605 9.67805 1.87804L12.122 4.32038C12.204 4.40242 12.2501 4.51366 12.2501 4.62964C12.2501 4.74562 12.204 4.85686 12.122 4.9389L5.37797 11.6846C5.29598 11.7665 5.18486 11.8125 5.06898 11.8126Z" stroke="#636363" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.4375 3.5L10.5 6.5625" stroke="#636363" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Edit
-        </button>
+    <div style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
+      <!-- STICKY TOP: name + edit + stat tiles -->
+      <div id="mp-sticky-top" style="background:var(--bg);padding:16px;flex-shrink:0;position:relative;z-index:1;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div id="mp-name" style="font-size:22px;font-weight:700;color:#212325;font-family:var(--font);"></div>
+          <button id="mp-edit-btn" class="action-btn cancel" style="flex:none;width:auto;padding:6px 14px;gap:6px;font-size:14px;">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.06898 11.8126H2.625C2.50897 11.8126 2.39769 11.7665 2.31564 11.6844C2.23359 11.6024 2.1875 11.4911 2.1875 11.3751V8.93109C2.18755 8.81521 2.23358 8.70408 2.31547 8.6221L9.05953 1.87804C9.14157 1.79605 9.25281 1.75 9.36879 1.75C9.48477 1.75 9.59601 1.79605 9.67805 1.87804L12.122 4.32038C12.204 4.40242 12.2501 4.51366 12.2501 4.62964C12.2501 4.74562 12.204 4.85686 12.122 4.9389L5.37797 11.6846C5.29598 11.7665 5.18486 11.8125 5.06898 11.8126Z" stroke="#636363" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.4375 3.5L10.5 6.5625" stroke="#636363" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Edit
+          </button>
+        </div>
+        <div id="mp-stat-tiles"></div>
       </div>
-      <!-- Stat tiles -->
-      <div id="mp-stat-tiles"></div>
-      <!-- Trend -->
-      <div id="mp-trend" style="margin-top:12px;"></div>
-      <!-- Calendar -->
-      <div id="mp-calendar" style="margin-top:12px;"></div>
+      <!-- SCROLLABLE BELOW: floating rounded card on grey bg, holds Trend + Calendar -->
+      <div id="mp-scroll" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg2);-webkit-overflow-scrolling:touch;" onscroll="onMpScroll(this)">
+        <div style="background:var(--bg);border-radius:16px;padding:16px;">
+          <div id="mp-trend"></div>
+          <div id="mp-calendar" style="margin-top:12px;"></div>
+        </div>
+      </div>
     </div>
   </div>
 
