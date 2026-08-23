@@ -270,7 +270,11 @@ async function openMemberProfile(memberId) {
     ${tileHtml('Substitute', stats.substitute_count||0, 'S')}
   </div>`;
 
-  const last7 = stats.last_7_statuses || [];
+  let last7 = stats.last_7_statuses || [];
+  if(typeof last7 === 'string'){
+    try{ last7 = JSON.parse(last7); }catch(e){ last7 = []; }
+  }
+  if(!Array.isArray(last7)) last7 = [];
   const trendEl = document.getElementById('mp-trend');
   if(last7.length === 7) {
     const pc = {
