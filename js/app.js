@@ -205,8 +205,10 @@ function renderHomeMembers(filter='') {
     const stats = memberStats.find(s => s.member_id === m.id);
     const pct = stats?.attendance_percentage ?? null;
     return `<div class="member-row" onclick="openMemberProfile('${m.id}')">
-      <span class="sr-num">${i+1}</span>
-      <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+      <div class="member-row-main">
+        <span class="sr-num">${i+1}</span>
+        <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+      </div>
       <div style="display:flex;align-items:center;gap:10px;">
         ${renderSlider(pct)}
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 13L11 8L6 3" stroke="#8B8C8C" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -217,13 +219,13 @@ function renderHomeMembers(filter='') {
 
 function renderSlider(pct) {
   if(pct === null || pct === undefined) {
-    return `<div class="att-slider att-slider--blank"><div class="att-slider__track"><div class="att-slider__fill" style="width:0%;background:#fff"></div></div></div>`;
+    return `<div class="att-slider att-slider--blank"><div class="att-slider__track"><div class="att-slider__fill"></div></div></div>`;
   }
   const colorClass = pct <= 33 ? 'bad' : pct <= 66 ? 'moderate' : 'good';
   const pos = Math.min(Math.max(Math.round(pct), 2), 98);
   return `<div class="att-slider att-slider--${colorClass}">
     <div class="att-slider__track">
-      <div class="att-slider__fill" style="width:${pos}%"></div>
+      <div class="att-slider__fill"></div>
       <div class="att-slider__dot" style="left:calc(${pos}% - 4.5px)"></div>
     </div>
   </div>`;
