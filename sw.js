@@ -1,5 +1,5 @@
-const CACHE = 'bni-att-v5';
-const BASE = '/Attendance-Tracker';
+const CACHE = 'bni-att-v6';
+const BASE = '/Markd';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
