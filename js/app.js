@@ -175,9 +175,10 @@ async function doLogout() {
 async function initApp() {
   setLoading('Loading members...');
   // Kick off records fetch in parallel while members load
-  const [membersResult, recordsResult] = await Promise.all([
+  const [membersResult, recordsResult, statsResult] = await Promise.all([
     sb.from('members').select('*').eq('is_active',true).order('first_name'),
-    sb.from('records').select('*').order('date',{ascending:false})
+    sb.from('records').select('*').order('date',{ascending:false}),
+    sb.from('member_stats').select('*')
   ]);
   if(membersResult.error){
     document.getElementById('loading-text').textContent = 'Error: ' + membersResult.error.message;
@@ -185,6 +186,7 @@ async function initApp() {
   }
   members = membersResult.data||[];
   records = recordsResult.data||[];
+  memberStats = statsResult.data||[];
   _membersCached = true;
   _recordsCached = true;
   goHome();
@@ -196,23 +198,198 @@ function renderHomeMembers(filter='') {
   const q = filter.toLowerCase();
   const filtered = members.filter(m=>`${m.first_name} ${m.last_name}`.toLowerCase().includes(q));
   if(!filtered.length){
-    el.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">${members.length?'No results':'No members yet'}</div><div class="empty-sub">${members.length?'Try a different search.':'Tap "Add another member" above.'}</div></div>`;
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No members found</div><div class="empty-sub">Try a different search term</div></div>`;
     return;
   }
-  el.innerHTML = filtered.map((m)=>`
-    <div class="member-row">
-      <div class="member-row-main">
-        <span class="sr-num">${members.indexOf(m)+1}</span>
-        <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+  el.innerHTML = filtered.map((m,i) => {
+    const stats = memberStats.find(s => s.member_id === m.id);
+    const pct = stats?.attendance_percentage ?? null;
+    return `<div class="member-row" onclick="openMemberProfile('${m.id}')">
+      <span class="sr-num">${i+1}</span>
+      <span class="member-name-text">${esc(m.first_name)} ${esc(m.last_name)}</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        ${renderSlider(pct)}
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 13L11 8L6 3" stroke="#8B8C8C" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <button class="member-menu-btn" onclick="openMemberMenu('${m.id}', this)">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 9.74902C11.691 9.74902 12.251 10.309 12.251 11C12.251 11.691 11.691 12.251 11 12.251C10.309 12.251 9.74902 11.691 9.74902 11C9.74902 10.309 10.309 9.74902 11 9.74902Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/><path d="M15.332 9.6803C16.0231 9.6803 16.583 10.2402 16.583 10.9313C16.583 11.6223 16.0231 12.1823 15.332 12.1823C14.641 12.1823 14.0811 11.6223 14.0811 10.9313C14.0811 10.2402 14.641 9.6803 15.332 9.6803Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/><path d="M6.53125 9.6803C7.2223 9.6803 7.78223 10.2402 7.78223 10.9313C7.78223 11.6223 7.2223 12.1823 6.53125 12.1823C5.8402 12.1823 5.28027 11.6223 5.28027 10.9313C5.28027 10.2402 5.8402 9.6803 6.53125 9.6803Z" fill="#8B8E8D" stroke="#8B8E8D" stroke-width="0.44"/></svg>
-      </button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
-/* ── Member row popup menu (Edit / Delete) — a lightweight anchored
-   popover, not a modal: no dimming, closes on outside tap. ── */
+function renderSlider(pct) {
+  if(pct === null || pct === undefined) {
+    return `<div class="att-slider att-slider--blank"><div class="att-slider__track"><div class="att-slider__fill" style="width:0%;background:#fff"></div></div></div>`;
+  }
+  const colorClass = pct <= 33 ? 'bad' : pct <= 66 ? 'moderate' : 'good';
+  const pos = Math.min(Math.max(Math.round(pct), 2), 98);
+  return `<div class="att-slider att-slider--${colorClass}">
+    <div class="att-slider__track">
+      <div class="att-slider__fill" style="width:${pos}%"></div>
+      <div class="att-slider__dot" style="left:calc(${pos}% - 4.5px)"></div>
+    </div>
+  </div>`;
+}
+
+
+/* ── Member Profile Screen ─────────────────────────────────────── */
+async function openMemberProfile(memberId) {
+  viewingMemberId = memberId;
+  const m = members.find(x => x.id === memberId);
+  if(!m) return;
+  const stats = memberStats.find(s => s.member_id === memberId) || {};
+
+  document.getElementById('mp-name').textContent = `${m.first_name} ${m.last_name}`;
+  document.getElementById('mp-delete-btn').onclick = () => deleteMember(memberId);
+  document.getElementById('mp-edit-btn').onclick = () => openEditMember(memberId);
+
+  const tileHtml = (label, count, status) =>
+    `<div class="stat-tile ${count===0?'inactive':''}" onclick="openMemberStatDrawer('${memberId}','${status}','${label}')">
+      <span class="stat-tile-label">${label}</span>
+      <span style="display:flex;align-items:center;gap:8px;"><span class="stat-tile-count">${count}</span>${statChevron()}</span>
+    </div>`;
+
+  document.getElementById('mp-stat-tiles').innerHTML = `<div class="stat-tiles">
+    ${tileHtml('Present', stats.present_count||0, 'P')}
+    ${tileHtml('Absent', stats.absent_count||0, 'A')}
+    ${tileHtml('Late', stats.late_count||0, 'L')}
+    ${tileHtml('Substitute', stats.substitute_count||0, 'S')}
+  </div>`;
+
+  const last7 = stats.last_7_statuses || [];
+  const trendEl = document.getElementById('mp-trend');
+  if(last7.length === 7) {
+    const pc = {
+      P:{bg:'#83D1A2',bd:'#59AB7C',tx:'#025A28'},
+      A:{bg:'#F08A64',bd:'#E0774E',tx:'#6E2001'},
+      L:{bg:'#61A1F3',bd:'#2C73D8',tx:'#023379'},
+      S:{bg:'#FBDA83',bd:'#E1AA00',tx:'#765901'}
+    };
+    const pills = [...last7].reverse().map(s => {
+      const c = pc[s]||{bg:'#F6F6F6',bd:'#E3E3E3',tx:'#8B8E8D'};
+      return `<div style="width:40px;height:40px;border-radius:8px;background:${c.bg};border:1.5px solid ${c.bd};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:${c.tx};font-family:var(--font);">${s}</div>`;
+    }).join('');
+    trendEl.innerHTML = `<div class="mp-section">
+      <div class="mp-section-title">Trend</div>
+      <div class="mp-section-sub">Attendance trend since last 7 meetings</div>
+      <div style="display:flex;gap:8px;margin-top:12px;">${pills}</div>
+    </div>`;
+    trendEl.style.display = '';
+  } else {
+    trendEl.style.display = 'none';
+  }
+
+  await loadMemberAttendance(memberId);
+  renderMemberCalendar(memberId, new Date().getFullYear(), new Date().getMonth());
+  showScreen('screen-member-profile');
+}
+
+async function loadMemberAttendance(memberId) {
+  const {data} = await sb.from('attendance')
+    .select('status, records!inner(date,status)')
+    .eq('member_id', memberId)
+    .eq('records.status', 'saved');
+  const map = {};
+  (data||[]).forEach(a => { if(a.records?.date) map[a.records.date] = a.status; });
+  if(!window._memberAttCache) window._memberAttCache = {};
+  window._memberAttCache[memberId] = map;
+  return map;
+}
+
+function renderMemberCalendar(memberId, year, month) {
+  const calEl = document.getElementById('mp-calendar');
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayHeaders = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const cache = window._memberAttCache?.[memberId] || {};
+  const pc = {
+    P:{bg:'#83D1A2',bd:'#59AB7C',tx:'#025A28'},
+    A:{bg:'#F08A64',bd:'#E0774E',tx:'#6E2001'},
+    L:{bg:'#61A1F3',bd:'#2C73D8',tx:'#023379'},
+    S:{bg:'#FBDA83',bd:'#E1AA00',tx:'#765901'}
+  };
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  let cells = '';
+  for(let i = firstDay-1; i >= 0; i--)
+    cells += `<div class="cal-cell cal-cell--other">${prevDays-i}</div>`;
+  for(let d = 1; d <= daysInMonth; d++) {
+    const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const s = cache[ds];
+    if(s && pc[s]) {
+      const c = pc[s];
+      cells += `<div class="cal-cell" style="background:${c.bg};border:1.5px solid ${c.bd};color:${c.tx};font-weight:700;border-radius:8px;">${d}</div>`;
+    } else {
+      cells += `<div class="cal-cell">${d}</div>`;
+    }
+  }
+  const rem = (7 - ((firstDay + daysInMonth) % 7)) % 7;
+  for(let d = 1; d <= rem; d++)
+    cells += `<div class="cal-cell cal-cell--other">${d}</div>`;
+
+  calEl.innerHTML = `<div class="mp-section">
+    <div class="mp-section-title">Calendar View</div>
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="shiftCalendar('${memberId}',${year},${month},-1)">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8.125 10.5625L4.0625 6.5L8.125 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span class="cal-month-label">${monthNames[month]} ${year}</span>
+      <button class="cal-nav-btn" onclick="shiftCalendar('${memberId}',${year},${month},1)">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.875 10.5625L8.9375 6.5L4.875 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="cal-grid">
+      ${dayHeaders.map(d=>`<div class="cal-day-header">${d}</div>`).join('')}
+      ${cells}
+    </div>
+  </div>`;
+}
+
+function shiftCalendar(memberId, year, month, dir) {
+  let m = month + dir, y = year;
+  if(m < 0){ m = 11; y--; }
+  if(m > 11){ m = 0; y++; }
+  renderMemberCalendar(memberId, y, m);
+}
+
+async function openMemberStatDrawer(memberId, status, label) {
+  const {data} = await sb.from('attendance')
+    .select('status, records!inner(id,date,status)')
+    .eq('member_id', memberId)
+    .eq('status', status)
+    .eq('records.status', 'saved')
+    .order('created_at', {ascending:false});
+
+  const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const fmtDate = d => new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  const ARROW = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.1875 7H11.8125" stroke="#8B8E8D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.875 3.0625L11.8125 7L7.875 10.9375" stroke="#8B8E8D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const CLOSE = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><g clip-path="url(#xc3)"><path d="M14.0625 3.9375L3.9375 14.0625" stroke="#202322" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.0625 14.0625L3.9375 3.9375" stroke="#202322" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></g><defs><clipPath id="xc3"><rect width="18" height="18" fill="white"/></clipPath></defs></svg>`;
+
+  const rows = (data||[]).map(a => {
+    const dt = new Date(a.records.date);
+    return `<div style="display:flex;align-items:center;height:48px;padding:0 16px;border-bottom:1px solid #F5F5F5;justify-content:space-between;">
+      <span style="width:110px;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${fmtDate(a.records.date)}</span>
+      <span style="width:90px;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${dayNames[dt.getDay()]}</span>
+      <button onclick="closeModal();viewRecord('${a.records.id}')" style="width:28px;height:28px;background:#fff;border-radius:8px;border:none;outline:1px solid #E8E8E8;outline-offset:-1px;display:flex;align-items:center;justify-content:center;cursor:pointer;">${ARROW}</button>
+    </div>`;
+  }).join('') || `<div style="padding:24px;text-align:center;color:#B3B3B3;font-size:14px;font-family:var(--font);">No records</div>`;
+
+  showModal(`<div class="modal-sheet">
+    <div class="modal-sheet-header" id="filter-sticky-top">
+      <div class="filter-drawer-header">
+        <div class="filter-drawer-spacer"></div>
+        <div class="filter-drawer-title">${label}</div>
+        <button class="filter-drawer-close" onclick="closeModal()">${CLOSE}</button>
+      </div>
+      <div style="display:flex;align-items:center;padding:8px 16px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;">
+        <span style="width:110px;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Date</span>
+        <span style="width:90px;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Day</span>
+        <span style="font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">View</span>
+      </div>
+    </div>
+    <div class="modal-sheet-body" style="padding:0;max-height:432px;overflow-y:auto;" onscroll="onFilterScroll(this)">${rows}</div>
+  </div>`);
+}
+
+
 function openMemberMenu(id, btn) {
   closeMemberMenu();
   const rect = btn.getBoundingClientRect();
@@ -276,10 +453,19 @@ async function confirmAdd() {
   const fn=(document.getElementById('add-fn')?.value||'').trim();
   const ln=(document.getElementById('add-ln')?.value||'').trim();
   if(!fn) return;
-  const {data,error}=await sb.from('members').insert({first_name:fn,last_name:ln,is_active:true}).select().single();
+  const {data:sess}=await sb.auth.getSession(); const uid=sess?.session?.user?.id;
+  const {data,error}=await sb.from('members').insert({first_name:fn,last_name:ln,is_active:true,user_id:uid}).select().single();
   if(error){showToast('Error adding member');return;}
   members.push(data);
   members.sort((a,b)=>a.first_name.localeCompare(b.first_name));
+  // Insert blank stats row for new member
+  await sb.from('member_stats').insert({
+    user_id:uid, member_id:data.id,
+    member_name:`${fn} ${ln}`,
+    total_meetings:0,present_count:0,absent_count:0,late_count:0,substitute_count:0,
+    attendance_percentage:null,last_7_statuses:[]
+  });
+  memberStats = (await sb.from('member_stats').select('*')).data||[];
   _membersCached = true;
   closeModal();
   renderHomeMembers(document.getElementById('home-search').value);
@@ -552,6 +738,43 @@ async function upsertAtt(status) {
     await sb.from('attendance').insert(att.members.map(m=>({record_id:att.id,member_id:m.id,member_name:m.name,status:m.status})));
   }
   _recordsCached = false; // force refresh on next records visit
+  // Refresh member_stats after every saved record
+  if(status === 'saved') {
+    await _refreshMemberStats(att.members.map(m=>m.id));
+  }
+}
+
+async function _refreshMemberStats(memberIds) {
+  // Re-fetch stats for affected members from Supabase
+  // Supabase computes the stats via a direct re-insert with upsert
+  const {data:sess} = await sb.auth.getSession();
+  const uid = sess?.session?.user?.id;
+  for(const mid of memberIds){
+    // Fetch all saved attendance for this member
+    const {data:att} = await sb.from('attendance')
+      .select('status, records(date,status)')
+      .eq('member_id', mid)
+      .eq('records.status','saved');
+    const saved = (att||[]).filter(a=>a.records?.status==='saved');
+    const total = saved.length;
+    const P = saved.filter(a=>a.status==='P').length;
+    const A = saved.filter(a=>a.status==='A').length;
+    const L = saved.filter(a=>a.status==='L').length;
+    const S = saved.filter(a=>a.status==='S').length;
+    const pct = total > 0 ? Math.round(P*100/total*100)/100 : null;
+    // Last 7 statuses ordered by date desc
+    const sorted = [...saved].sort((a,b)=>new Date(b.records.date)-new Date(a.records.date));
+    const last7 = sorted.slice(0,7).map(a=>a.status);
+    const m = members.find(x=>x.id===mid);
+    const name = m ? `${m.first_name} ${m.last_name}` : '';
+    await sb.from('member_stats').upsert({
+      user_id:uid, member_id:mid, member_name:name,
+      total_meetings:total, present_count:P, absent_count:A, late_count:L, substitute_count:S,
+      attendance_percentage:pct, last_7_statuses:last7, updated_at:new Date().toISOString()
+    },{onConflict:'user_id,member_id'});
+  }
+  // Reload memberStats cache
+  memberStats = (await sb.from('member_stats').select('*')).data||[];
 }
 
 /* ─── RECORDS ──────────────────────────────── */
