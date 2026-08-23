@@ -1,0 +1,129 @@
+/* ──────────────────────────────────────────────
+   MEMBER PROFILE SCREEN
+   Attendance slider on members list, profile screen
+   sections, trend pills, calendar view.
+   ────────────────────────────────────────────── */
+
+/* ── Attendance slider (members list row) */
+.att-slider{
+  width:79px;
+  height:21px;
+  border-radius:30px;
+  background:#F5F5F5;
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.att-slider__track{
+  position:absolute;
+  inset:4px;
+  border-radius:23px;
+  overflow:visible;
+}
+.att-slider__fill{
+  height:100%;
+  border-radius:23px;
+  transition:width 0.3s ease;
+}
+.att-slider__dot{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#fff;
+  border:1.75px solid #fff;
+  box-shadow:0px 0px 3px rgba(0,0,0,0.25);
+  transition:left 0.3s ease;
+}
+.att-slider--good .att-slider__fill{background:linear-gradient(180deg,#71CCB7 0%,#77CCA1 56%,#7ACA9F 100%);}
+.att-slider--moderate .att-slider__fill{background:linear-gradient(180deg,#92BCFA 0%,#81A4FE 100%);}
+.att-slider--bad .att-slider__fill{background:linear-gradient(180deg,#FC9E64 0%,#FF8452 100%);}
+.att-slider--blank .att-slider__fill{background:#fff;}
+
+/* ── Member row updated (clickable, no edit/delete buttons) */
+.member-row{
+  display:flex;
+  align-items:center;
+  height:48px;
+  padding:12px 0;
+  border-bottom:1px solid #F5F5F5;
+  gap:8px;
+  margin:0 -16px;
+  padding-left:16px;
+  padding-right:16px;
+  cursor:pointer;
+}
+.member-row:last-child{border-bottom:none;}
+
+/* ── Profile screen sections */
+.mp-section{
+  background:#fff;
+  border-radius:12px;
+  border:1px solid #E9E9E9;
+  padding:16px;
+  margin-bottom:12px;
+}
+.mp-section-title{
+  font-size:16px;
+  font-weight:700;
+  color:#212325;
+  font-family:var(--font);
+  margin-bottom:4px;
+}
+.mp-section-sub{
+  font-size:13px;
+  color:#767676;
+  font-family:var(--font);
+}
+
+/* ── Calendar */
+.cal-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:12px 0 10px;
+}
+.cal-month-label{
+  font-size:15px;
+  font-weight:600;
+  color:#212325;
+  font-family:var(--font);
+}
+.cal-nav-btn{
+  width:32px;
+  height:32px;
+  border:1px solid #E9E9E9;
+  border-radius:8px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.cal-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:4px;
+}
+.cal-day-header{
+  text-align:center;
+  font-size:12px;
+  font-weight:600;
+  color:#B3B3B3;
+  font-family:var(--font);
+  padding:4px 0;
+}
+.cal-cell{
+  aspect-ratio:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:500;
+  color:#252525;
+  font-family:var(--font);
+  border-radius:8px;
+}
+.cal-cell--other{color:#D0D0D0;}
