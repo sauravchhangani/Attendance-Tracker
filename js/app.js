@@ -328,39 +328,51 @@ function renderMemberCalendar(memberId, year, month) {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month+1, 0).getDate();
   const prevDays = new Date(year, month, 0).getDate();
-  let cells = '';
+
+  const allCells = [];
   for(let i = firstDay-1; i >= 0; i--)
-    cells += `<div class="cal-cell cal-cell--other">${prevDays-i}</div>`;
+    allCells.push(`<div class="cal-cell cal-cell--other">${prevDays-i}</div>`);
   for(let d = 1; d <= daysInMonth; d++) {
     const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const s = cache[ds];
     if(s && ['P','A','L','S'].includes(s)) {
-      cells += `<div class="status-sq status-sq--${s}">${d}</div>`;
+      allCells.push(`<div class="status-sq status-sq--${s}">${d}</div>`);
     } else {
-      cells += `<div class="cal-cell">${d}</div>`;
+      allCells.push(`<div class="cal-cell">${d}</div>`);
     }
   }
-  const rem = (7 - ((firstDay + daysInMonth) % 7)) % 7;
+  const rem = (7 - (allCells.length % 7)) % 7;
   for(let d = 1; d <= rem; d++)
-    cells += `<div class="cal-cell cal-cell--other">${d}</div>`;
+    allCells.push(`<div class="cal-cell cal-cell--other">${d}</div>`);
+
+  // Build one flex row per week (7 cells each), matching Figma's row-by-row
+  // structure, instead of a single CSS grid which stretches column widths.
+  let weekRows = '';
+  for(let i = 0; i < allCells.length; i += 7) {
+    weekRows += `<div class="cal-row">${allCells.slice(i, i+7).join('')}</div>`;
+  }
 
   const atMin = bounds && (year < bounds.minY || (year === bounds.minY && month <= bounds.minM));
   const atMax = bounds && (year > bounds.maxY || (year === bounds.maxY && month >= bounds.maxM));
 
   calEl.innerHTML = `<div class="mp-section">
     <div class="mp-section-title">Calendar View</div>
-    <div class="cal-nav">
-      <button class="cal-nav-btn" ${atMin?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},-1)">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8.125 10.5625L4.0625 6.5L8.125 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <span class="cal-month-label">${monthNames[month]} ${year}</span>
-      <button class="cal-nav-btn" ${atMax?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},1)">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.875 10.5625L8.9375 6.5L4.875 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
-    <div class="cal-grid">
-      ${dayHeaders.map(d=>`<div class="cal-day-header">${d}</div>`).join('')}
-      ${cells}
+    <div class="cal-body">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" ${atMin?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},-1)">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M8.125 10.5625L4.0625 6.5L8.125 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="cal-month-label">${monthNames[month]} ${year}</span>
+        <button class="cal-nav-btn" ${atMax?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},1)">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.875 10.5625L8.9375 6.5L4.875 2.4375" stroke="#606264" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="cal-rows">
+        <div class="cal-row cal-row--header">
+          ${dayHeaders.map(d=>`<div class="cal-day-header">${d}</div>`).join('')}
+        </div>
+        ${weekRows}
+      </div>
     </div>
   </div>`;
 }
