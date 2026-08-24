@@ -1,4 +1,4 @@
-const CACHE = 'bni-att-v6';
+const CACHE = 'bni-att-v7';
 const BASE = '/Markd';
 
 self.addEventListener('install', e => {
