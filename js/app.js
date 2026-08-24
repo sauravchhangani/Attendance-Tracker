@@ -103,11 +103,40 @@ function setNavActive(tab) {
 }
 
 /* ─── MODAL ────────────────────────────────── */
+let _modalGen = 0;
 function showModal(html, centered=false) {
+  const gen = ++_modalGen;
   document.getElementById('modal-root').innerHTML =
-    `<div class="modal-overlay${centered?' centered':''}" id="modal-overlay" onclick="if(event.target.id==='modal-overlay')closeModal()">${html}</div>`;
+    `<div class="modal-overlay${centered?' centered':''} t-backdrop-fade" id="modal-overlay" data-open="false" onclick="if(event.target.id==='modal-overlay')closeModal()">${html}</div>`;
+  const overlay = document.getElementById('modal-overlay');
+  const panel = overlay?.firstElementChild;
+  if(panel){
+    panel.classList.add('t-panel-slide');
+    panel.dataset.open = 'false';
+    panel.style.setProperty('--panel-translate-y', (panel.offsetHeight * 0.5) + 'px');
+  }
+  // Two rAFs: the first commits the closed state to a rendered frame,
+  // the second flips to open so the transition actually has something
+  // to animate from instead of the element appearing already-open.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if(gen !== _modalGen) return; // a newer modal replaced this one already
+    overlay.dataset.open = 'true';
+    if(panel) panel.dataset.open = 'true';
+  }));
 }
-function closeModal() { document.getElementById('modal-root').innerHTML=''; }
+function closeModal() {
+  const gen = _modalGen;
+  const overlay = document.getElementById('modal-overlay');
+  if(!overlay) return;
+  const panel = overlay.firstElementChild;
+  overlay.dataset.open = 'false';
+  if(panel) panel.dataset.open = 'false';
+  setTimeout(() => {
+    if(gen !== _modalGen) return; // a new modal opened before this close finished
+    const root = document.getElementById('modal-root');
+    if(root) root.innerHTML = '';
+  }, 350); // matches --panel-close-dur
+}
 
 /* Shared confirm-dialog icons — currentColor so each button's
    text color (set by .action-btn.cancel / .save / .danger) also
