@@ -282,7 +282,7 @@ async function openMemberProfile(memberId) {
       const style = ['P','A','L','S'].includes(s) ? '' : 'style="background:#F6F6F6;color:#8B8E8D;"';
       return `<div class="${cls}" ${style}>${s}</div>`;
     }).join('');
-    trendEl.innerHTML = `<div class="mp-plain-section">
+    trendEl.innerHTML = `<div class="mp-section">
       <div class="mp-section-title">Trend</div>
       <div class="mp-section-sub">Attendance trend since last 7 meetings</div>
       <div class="trend-row">${pills}</div>
@@ -347,7 +347,7 @@ function renderMemberCalendar(memberId, year, month) {
   const atMin = bounds && (year < bounds.minY || (year === bounds.minY && month <= bounds.minM));
   const atMax = bounds && (year > bounds.maxY || (year === bounds.maxY && month >= bounds.maxM));
 
-  calEl.innerHTML = `<div class="mp-plain-section">
+  calEl.innerHTML = `<div class="mp-section">
     <div class="mp-section-title">Calendar View</div>
     <div class="cal-nav">
       <button class="cal-nav-btn" ${atMin?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},-1)">
@@ -394,7 +394,7 @@ async function openMemberStatDrawer(memberId, status, label) {
     const dt = new Date(a.records.date);
     return `<div style="display:flex;align-items:center;height:48px;padding:0 16px;border-bottom:1px solid #F5F5F5;">
       <span style="width:110px;flex-shrink:0;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${fmtDate(a.records.date)}</span>
-      <span style="width:90px;flex-shrink:0;text-align:center;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${dayNames[dt.getDay()]}</span>
+      <span style="width:90px;flex-shrink:0;margin-left:32px;text-align:left;font-size:14px;color:#252525;font-weight:500;font-family:var(--font);">${dayNames[dt.getDay()]}</span>
       <span style="flex:1;display:flex;justify-content:flex-end;">
         <button onclick="closeModal();viewRecord('${a.records.id}')" style="width:28px;height:28px;background:#fff;border-radius:8px;border:none;outline:1px solid #E8E8E8;outline-offset:-1px;display:flex;align-items:center;justify-content:center;cursor:pointer;">${ARROW}</button>
       </span>
@@ -410,7 +410,7 @@ async function openMemberStatDrawer(memberId, status, label) {
       </div>
       <div style="display:flex;align-items:center;padding:8px 16px;border-top:1px solid #E8E8E8;border-bottom:1px solid #E8E8E8;">
         <span style="width:110px;flex-shrink:0;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Date</span>
-        <span style="width:90px;flex-shrink:0;text-align:center;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Day</span>
+        <span style="width:90px;flex-shrink:0;margin-left:32px;text-align:left;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">Day</span>
         <span style="flex:1;text-align:right;font-size:14px;font-weight:500;color:#767676;font-family:var(--font);">View</span>
       </div>
     </div>
