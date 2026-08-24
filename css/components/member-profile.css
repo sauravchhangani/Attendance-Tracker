@@ -80,9 +80,9 @@
   margin-top:12px;
 }
 .trend-row .status-sq{
-  flex:1;
-  width:auto;
-  aspect-ratio:1;
+  flex:0 0 32px;
+  width:32px;
+  height:32px;
 }
 .mp-section-title{
   font-size:16px;
