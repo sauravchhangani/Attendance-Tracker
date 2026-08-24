@@ -356,7 +356,7 @@ function renderMemberCalendar(memberId, year, month) {
   const atMax = bounds && (year > bounds.maxY || (year === bounds.maxY && month >= bounds.maxM));
 
   calEl.innerHTML = `<div class="mp-section">
-    <div class="mp-section-title">Calendar View</div>
+    <div class="mp-section-title" style="margin-bottom:20px;">Calendar View</div>
     <div class="cal-body">
       <div class="cal-nav">
         <button class="cal-nav-btn" ${atMin?'disabled':''} onclick="shiftCalendar('${memberId}',${year},${month},-1)">
