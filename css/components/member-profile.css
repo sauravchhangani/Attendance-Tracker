@@ -76,7 +76,7 @@
 }
 .trend-row{
   display:flex;
-  gap:8px;
+  justify-content:space-between;
   margin-top:12px;
 }
 .trend-row .status-sq{
