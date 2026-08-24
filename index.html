@@ -244,12 +244,10 @@
         </div>
         <div id="mp-stat-tiles"></div>
       </div>
-      <!-- SCROLLABLE BELOW: floating rounded card on grey bg, holds Trend + Calendar -->
-      <div id="mp-scroll" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg2);-webkit-overflow-scrolling:touch;" onscroll="onMpScroll(this)">
-        <div style="background:var(--bg);border-radius:16px;padding:16px;">
-          <div id="mp-trend"></div>
-          <div id="mp-calendar" style="margin-top:12px;"></div>
-        </div>
+      <!-- SCROLLABLE BELOW: Trend + Calendar sit directly on the screen background -->
+      <div id="mp-scroll" style="flex:1;overflow-y:auto;padding:16px;background:var(--bg);-webkit-overflow-scrolling:touch;" onscroll="onMpScroll(this)">
+        <div id="mp-trend"></div>
+        <div id="mp-calendar" style="margin-top:12px;"></div>
       </div>
     </div>
   </div>
