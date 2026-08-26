@@ -779,7 +779,7 @@ function setStatusModal(ri,s){
       if(!document.querySelector('.filter-member-row')){
         closeModal();
       }
-    }, 280); // matches the CSS slide-out transition duration
+    }, 350); // matches --panel-close-dur, same as the CSS transition above
   }, 400);
 }
 
