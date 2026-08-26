@@ -776,6 +776,9 @@ function setStatusModal(ri,s){
     row.classList.add('row-slide-out');
     setTimeout(() => {
       row.remove();
+      document.querySelectorAll('.filter-member-row .filter-sr').forEach((el, idx) => {
+        el.textContent = idx + 1;
+      });
       if(!document.querySelector('.filter-member-row')){
         closeModal();
       }
