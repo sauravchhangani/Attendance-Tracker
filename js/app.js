@@ -728,17 +728,21 @@ function renderAttMembers(filter='') {
   updateSaveBtn();
 }
 
+let _attFilterKey = null;
 function openAttFilter(sf) {
   const target=sf===''?currentAtt.members.filter(m=>m.status===''):currentAtt.members.filter(m=>m.status===sf);
   const labels={'':'Unmarked Members','P':'Present Members','A':'Absent Members','L':'Late Members','S':'Substitute Members'};
   if(!target.length)return;
-  const rows=target.map((m,i)=>`<div class="filter-member-row">
+  _attFilterKey = sf;
+  const rows=target.map((m,i)=>{
+    const ri=currentAtt.members.indexOf(m);
+    return `<div class="filter-member-row" data-ri="${ri}">
     <span class="filter-sr">${i+1}</span><span class="filter-name">${esc(m.name)}</span>
-    <div class="filter-pals">${['P','A','L','S'].map(s=>{
-      const ri=currentAtt.members.indexOf(m);
-      return `<button class="pals-btn${m.status===s?' active-'+s:''}" onclick="setStatusModal(${ri},'${s}')">${s}</button>`;
-    }).join('')}</div>
-  </div>`).join('');
+    <div class="filter-pals">${['P','A','L','S'].map(s=>
+      `<button class="pals-btn${m.status===s?' active-'+s:''}" onclick="setStatusModal(${ri},'${s}')">${s}</button>`
+    ).join('')}</div>
+  </div>`;
+  }).join('');
   showModal(`<div class="modal-sheet">
     <div class="modal-sheet-header" id="filter-sticky-top">
       <div class="filter-drawer-header"><div class="filter-drawer-spacer"></div><div class="filter-drawer-title">${labels[sf]}</div><button class="filter-drawer-close" onclick="closeModal()">${xIcon()}</button></div>
@@ -751,11 +755,32 @@ function setStatusModal(ri,s){
   currentAtt.members[ri].status=currentAtt.members[ri].status===s?'':s;
   renderAttStats();
   renderAttMembers(document.getElementById('att-search').value);
-  // Re-render the modal with updated statuses — don't close it
-  const sf = document.querySelector('.filter-drawer-title')?.textContent?.replace(' Members','') || '';
-  const sfMap = {'Present':'P','Absent':'A','Late':'L','Substitute':'S','Unmarked':''};
-  const sfKey = sfMap[sf] !== undefined ? sfMap[sf] : null;
-  if(sfKey !== null) openAttFilter(sfKey);
+
+  const row = document.querySelector(`.filter-member-row[data-ri="${ri}"]`);
+  if(!row || _attFilterKey === null) return;
+
+  // Show the new selection immediately — no delay on the feedback itself.
+  const m = currentAtt.members[ri];
+  const btnsHtml = ['P','A','L','S'].map(st =>
+    `<button class="pals-btn${m.status===st?' active-'+st:''}" onclick="setStatusModal(${ri},'${st}')">${st}</button>`
+  ).join('');
+  const palsEl = row.querySelector('.filter-pals');
+  if(palsEl) palsEl.innerHTML = btnsHtml;
+  row.style.pointerEvents = 'none'; // lock the row for the rest of this sequence
+
+  // Any status change always removes the member from whichever single-status
+  // (or Unmarked) filter this drawer is showing, so the row always needs to
+  // leave: hold briefly so the selection registers, then slide it out before
+  // actually removing it from the DOM.
+  setTimeout(() => {
+    row.classList.add('row-slide-out');
+    setTimeout(() => {
+      row.remove();
+      if(!document.querySelector('.filter-member-row')){
+        closeModal();
+      }
+    }, 280); // matches the CSS slide-out transition duration
+  }, 400);
 }
 
 function backFromAttendance() {
