@@ -50,8 +50,16 @@
   gap:8px;
   margin:0 -20px;
   box-sizing:border-box;
+  transition: transform 280ms cubic-bezier(0.4,0,1,1), opacity 280ms cubic-bezier(0.4,0,1,1);
 }
 .filter-member-row:last-child{border-bottom:none;}
+.filter-member-row.row-slide-out{
+  transform: translateX(100%);
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .filter-member-row{ transition: none !important; }
+}
 
 .filter-sr{width:24px;font-size:14px;color:var(--att-sr-color);font-weight:500;flex-shrink:0;}
 .filter-name{flex:1;font-size:14px;color:var(--att-name-color);font-weight:500;}
