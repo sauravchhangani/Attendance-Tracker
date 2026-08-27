@@ -1376,6 +1376,21 @@ goRecords = async function() {
   pushHistory('screen-records');
 };
 
+/* ─── BUTTON PRESS FEEDBACK ────────────────────
+   Native :active reverts the instant a tap/click
+   releases, which on a fast tap can be too brief to
+   register (NN/g recommends pressed feedback stay
+   visible ~100-150ms). This holds the same :active
+   visual open for a guaranteed minimum via a class,
+   without delaying the button's actual click action. */
+document.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('.action-btn');
+  if(!btn || btn.disabled) return;
+  btn.classList.add('is-pressed');
+  clearTimeout(btn._pressTimer);
+  btn._pressTimer = setTimeout(() => btn.classList.remove('is-pressed'), 150);
+});
+
 /* ─── BOOT ─────────────────────────────────── */
 (async () => {
   try {
